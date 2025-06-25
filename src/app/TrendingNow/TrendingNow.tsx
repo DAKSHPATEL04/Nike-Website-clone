@@ -146,7 +146,7 @@ const TrendingNowComponent = () => {
                 width: "440px",
               }}
             >
-              <Link href={`/products/${product._id}`}>
+              <Link href={`/components/MainPage`}>
                 <div className="rounded-lg ">
                   <div className="h-120 flex items-center justify-center">
                     <img

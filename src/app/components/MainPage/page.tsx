@@ -16,7 +16,8 @@ import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import Navbar from "@/shared/Navbar";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -27,6 +28,7 @@ const MainPage = () => {
   const [onlyNew, setOnlyNew] = useState(false);
   const [minRating, setMinRating] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [hideSidebar, setHideSidebar] = useState(false);
   const [sortBy, setSortBy] = useState("");
 
   // Accordion states for filter sections
@@ -139,208 +141,186 @@ const MainPage = () => {
       {isLoading ? (
         <Spiner />
       ) : (
-        <div>
-          <Navbar />
-          <div className="flex bg-white min-h-screen relative">
-            {/* Filter Sidebar */}
-            <div
-              className={`fixed left-0 top-0 h-full text-black bg-white z-50 shadow-lg transform transition-transform duration-300 ${
-                showFilters ? "translate-x-0" : "-translate-x-full"
-              } w-80 overflow-y-auto`}
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-black">Filters</h2>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                  >
-                    <CloseIcon className="text-gray-600" />
-                  </button>
-                </div>
-
-                {/* Price Filter */}
-                <div className="mb-6 border-b border-gray-200 pb-4">
-                  <button
-                    onClick={() => toggleSection("price")}
-                    className="flex justify-between items-center w-full py-2 text-left"
-                  >
-                    <span className="font-medium text-black">
-                      Shop By Price
-                    </span>
-                    {expandedSections.price ? (
-                      <KeyboardArrowUpIcon className="text-gray-600" />
-                    ) : (
-                      <KeyboardArrowDownIcon className="text-gray-600" />
-                    )}
-                  </button>
-                  {expandedSections.price && (
-                    <div className="mt-4 space-y-3">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">
-                          Min Price (₹)
-                        </label>
-                        <input
-                          type="number"
-                          value={minPrice}
-                          onChange={(e) => setMinPrice(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-                          placeholder="0"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">
-                          Max Price (₹)
-                        </label>
-                        <input
-                          type="number"
-                          value={maxPrice}
-                          onChange={(e) => setMaxPrice(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-                          placeholder="50000"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Rating Filter */}
-                <div className="mb-6 border-b border-gray-200 pb-4">
-                  <button
-                    onClick={() => toggleSection("rating")}
-                    className="flex justify-between items-center w-full py-2 text-left"
-                  >
-                    <span className="font-medium text-black">Rating</span>
-                    {expandedSections.rating ? (
-                      <KeyboardArrowUpIcon className="text-gray-600" />
-                    ) : (
-                      <KeyboardArrowDownIcon className="text-gray-600" />
-                    )}
-                  </button>
-                  {expandedSections.rating && (
-                    <div className="mt-4">
-                      <select
-                        value={minRating}
-                        onChange={(e) => setMinRating(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-                      >
-                        <option value="">All Ratings</option>
-                        {[1, 2, 3, 4, 5].map((r) => (
-                          <option key={r} value={r}>
-                            {r} Star{r > 1 && "s"} & Up
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-
-                {/* New Arrival Filter */}
-                <div className="mb-6 border-b border-gray-200 pb-4">
-                  <button
-                    onClick={() => toggleSection("newArrival")}
-                    className="flex justify-between items-center w-full py-2 text-left"
-                  >
-                    <span className="font-medium text-black">New Arrivals</span>
-                    {expandedSections.newArrival ? (
-                      <KeyboardArrowUpIcon className="text-gray-600" />
-                    ) : (
-                      <KeyboardArrowDownIcon className="text-gray-600" />
-                    )}
-                  </button>
-                  {expandedSections.newArrival && (
-                    <div className="mt-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={onlyNew}
-                          onChange={(e) => setOnlyNew(e.target.checked)}
-                          className="w-4 h-4 text-black focus:ring-black border-gray-300 rounded"
-                        />
-                        <span className="text-sm text-gray-700">
-                          New Arrivals Only
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </div>
-
-                {/* Reset Filters Button */}
+        <div className="bg-white min-h-screen flex">
+          {/* Filter Sidebar */}
+          <div
+            className={`fixed lg:relative text-black top-0 left-0 h-full w-80 bg-white z-50 lg:z-auto shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out transform ${
+              hideSidebar
+                ? "lg:hidden"
+                : showFilters
+                ? "translate-x-0"
+                : "-translate-x-full lg:translate-x-0"
+            }`}
+          >
+            <div className="p-6 h-full overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-black">Filters</h2>
                 <button
-                  onClick={resetFilters}
-                  className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium"
+                  onClick={() => setShowFilters(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full lg:hidden"
                 >
-                  Clear All Filters
+                  <CloseIcon className="text-gray-600" />
                 </button>
               </div>
-            </div>
 
-            {/* Overlay */}
-            {showFilters && (
-              <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                onClick={() => setShowFilters(false)}
-              />
-            )}
-
-            {/* Main Content */}
-            <div
-              className={`flex-1 transition-all duration-300 ${
-                showFilters ? "ml-80 pl-6" : "ml-0"
-              } relative z-40  bg-white `}
-            >
-              <div className="p-6">
-                {/* Header */}
-                <div className="flex flex-col  justify-center items-center z-40 py-4 text-black  bg-[#f5f5f5]  ">
-                  <div className="flex flex-col justify-center items-center">
-                    <h1
-                      className=""
-                      style={{
-                        fontFamily: "poppins",
-                        fontSize: "18px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      New Styles On Sale: Up To 40% Off
-                    </h1>
-                    <p
-                      className="underline"
-                      style={{
-                        fontFamily: "poppins",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      <span>Shop All Our New Markdowns</span>
-                    </p>
+              {/* Price Filter */}
+              <div className="mb-6 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("price")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-black">Shop By Price</span>
+                  {expandedSections.price ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.price && (
+                  <div className="mt-4 space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 block mb-1">
+                        Min Price (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 block mb-1">
+                        Max Price (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                        placeholder="50000"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="mb-6">
-                  <nav className="text-sm text-gray-600 mb-2">
-                    <span>Shoes</span> / <span>Nike Dunk</span>
-                  </nav>
-                  <h1 className="text-2xl font-bold text-black mb-4">
+                )}
+              </div>
+
+              {/* Rating Filter */}
+              <div className="mb-6 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("rating")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-black">Rating</span>
+                  {expandedSections.rating ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.rating && (
+                  <div className="mt-4">
+                    <select
+                      value={minRating}
+                      onChange={(e) => setMinRating(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      <option value="">All Ratings</option>
+                      {[1, 2, 3, 4, 5].map((r) => (
+                        <option key={r} value={r}>
+                          {r} Star{r > 1 && "s"} & Up
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* New Arrival Filter */}
+              <div className="mb-6 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("newArrival")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-black">New Arrivals</span>
+                  {expandedSections.newArrival ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.newArrival && (
+                  <div className="mt-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={onlyNew}
+                        onChange={(e) => setOnlyNew(e.target.checked)}
+                        className="w-4 h-4 text-black focus:ring-black border-gray-300 rounded"
+                      />
+                      <span className="text-sm text-gray-700">
+                        New Arrivals Only
+                      </span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
+              {/* Reset Filters Button */}
+              <button
+                onClick={resetFilters}
+                className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          </div>
+
+          {/* Overlay */}
+          {showFilters && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              onClick={() => setShowFilters(false)}
+            />
+          )}
+
+          {/* Main Content */}
+          <div className="flex-1 overflow-x-hidden">
+            <div className="p-4">
+              {/* Breadcrumb and Title */}
+              <div className="mb-6">
+                <nav className="text-sm text-gray-600 mb-2">
+                  <span>Shoes</span> / <span>Nike Dunk</span>
+                </nav>
+                <div className="flex justify-between items-center">
+                  <h1 className="text-2xl font-bold text-black">
                     Men's Nike Dunk Shoes ({sortedProducts.length})
                   </h1>
-
-                  {/* Controls */}
-                  <div className="flex justify-end items-center gap-3 text-black ">
+                  <div className="flex gap-4 text-black">
+                    <button
+                      onClick={() => setHideSidebar(!hideSidebar)}
+                      className="hidden lg:flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <TuneOutlinedIcon className="text-gray-600" />
+                      <span className="font-medium">
+                        {hideSidebar ? "Show" : "Hide"} Filters
+                      </span>
+                    </button>
                     <button
                       onClick={() => setShowFilters(true)}
-                      className="flex  items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors lg:hidden"
                     >
-                      <span className="font-medium">Show Filters</span>
-                      <TuneOutlinedIcon className="text-gray-600" />
+                      <FilterAltOutlinedIcon className="text-black" />
+                      <span className="font-medium">Filters</span>
                     </button>
-
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">Sort By</span>
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
                       >
-                        <option value="">Featured</option>
+                        <option value="">Sort By</option>
                         <option value="newest">Newest</option>
                         <option value="price-high-low">Price: High-Low</option>
                         <option value="price-low-high">Price: Low-High</option>
@@ -349,90 +329,85 @@ const MainPage = () => {
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Products Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {sortedProducts.length === 0 ? (
-                    <div className="col-span-full text-center py-12">
-                      <h2 className="text-xl font-semibold text-gray-600">
-                        No Products Found
-                      </h2>
-                      <p className="text-gray-500 mt-2">
-                        Try adjusting your filters or search criteria
-                      </p>
-                    </div>
-                  ) : (
-                    sortedProducts.map((product: Product) => (
-                      <div key={product._id} className="group cursor-pointer">
-                        <Link href={`/products/${product._id}`}>
-                          <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                            {/* Product Image */}
-                            <div className="aspect-square bg-gray-50 flex items-center justify-center p-4">
-                              <img
-                                src={product.product_image}
-                                alt={product.product_name}
-                                className="w-full h-full object-contain "
-                              />
-                            </div>
+              {/* Category Chips */}
+              <div className="flex flex-wrap gap-4 text-black mb-6">
+                <div className="bg-gray-100 px-4 py-2 rounded-full">
+                  <span className="text-sm font-medium">Lifestyle</span>
+                </div>
+                <div className="bg-gray-100 px-4 py-2 rounded-full">
+                  <span className="text-sm font-medium">Skateboarding</span>
+                </div>
+              </div>
 
-                            {/* Product Info */}
-                            <div className="p-4">
-                              <h3 className="font-medium text-black mb-1 text-sm">
-                                {product.product_name}
-                              </h3>
-                              <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                                {product.product_data.descrption}
-                              </p>
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-black font-semibold">
-                                  MRP : ₹{product.product_data.prize}
-                                </span>
-                                {product.product_data.is_new && (
-                                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                    New
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                {Array.from(
-                                  { length: product.product_data.rating },
-                                  (_, i) => (
-                                    <StarIcon
-                                      key={i}
-                                      className="text-yellow-400 text-sm"
-                                    />
-                                  )
-                                )}
-                                <span className="text-gray-500 text-xs ml-1">
-                                  ({product.product_data.rating})
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
+              {/* Products Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedProducts.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <h2 className="text-xl font-semibold text-gray-600">
+                      No Products Found
+                    </h2>
+                    <p className="text-gray-500 mt-2">
+                      Try adjusting your filters or search criteria
+                    </p>
+                  </div>
+                ) : (
+                  sortedProducts.map((product: Product) => (
+                    <div key={product._id} className="group relative">
+                      <div className="relative">
+                        {/* Product Image */}
+                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                          <Link href={`/products/${product._id}`}>
+                            <img
+                              src={product.product_image}
+                              alt={product.product_name}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </Link>
+                        </div>
 
-                        {/* Action Buttons - Updated UI */}
-                        <div className="flex   justify-center items-center gap-3 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {/* Action Buttons - Top Right */}
+                        <div className="absolute top-2 right-2 flex gap-2">
                           <Link
                             href={`/components/RegistrationForm/${product._id}`}
-                            className="p-2 bg-green-400 text-black rounded-full hover:bg-gray-100 transition-colors border border-gray-300 shadow-sm"
+                            className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                            title="Edit"
                           >
-                            <EditIcon className="text-sm" />
+                            <EditIcon className="text-gray-700 text-sm" />
                           </Link>
                           <button
                             onClick={(e) => {
                               e.preventDefault();
                               setSelectedProductId(product._id);
                             }}
-                            className="p-2 bg-red-500 text-black rounded-full hover:bg-gray-800 transition-colors border border-black shadow-sm"
+                            className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                            title="Delete"
                           >
-                            <DeleteIcon className="text-sm" />
+                            <DeleteIcon className="text-gray-700 text-sm" />
                           </button>
                         </div>
+
+                        {/* Product Info */}
+                        <div className="mt-3">
+                          <Link href={`/products/${product._id}`}>
+                            <h3 className="font-medium text-black text-sm">
+                              {product.product_name}
+                            </h3>
+                            <p className="text-gray-600 text-xs mt-1">
+                              Men's Shoes • 1 Colour
+                            </p>
+                            <div className="mt-2">
+                              <span className="text-black font-semibold">
+                                MRP : ₹{product.product_data.prize}
+                              </span>
+                            </div>
+                          </Link>
+                        </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

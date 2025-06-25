@@ -146,9 +146,9 @@ const ShopBySport = () => {
                 width: "420px",
               }}
             >
-              <Link href={`/products/${product._id}`}>
-                <div className="rounded-lg ">
-                  <div className=" h-80 flex items-center justify-center">
+              <Link href={`/components/MainPage`}>
+                <div className="rounded-lg">
+                  <div className="h-80 flex items-center justify-center">
                     <img
                       src={product.product_image}
                       alt={product.product_name}
@@ -156,7 +156,7 @@ const ShopBySport = () => {
                     />
                   </div>
                   <div
-                    className=" absolute bottom-14 left-12  bg-white py-[5px] px-4 text-black rounded-3xl"
+                    className="absolute bottom-14 left-12 bg-white py-[5px] px-4 text-black rounded-3xl"
                     style={{
                       fontFamily: "poppins",
                       fontSize: "16px",

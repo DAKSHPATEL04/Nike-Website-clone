@@ -12,6 +12,11 @@ import { useSearch } from "@/context/searchContex";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { navMenus } from "@/app/data/navMenus";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import { signOut } from "firebase/auth";
+import { auth } from "@/app/firebase";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
 // Styled Search Bar Components
 const Search = styled("div")(({ theme }) => ({
@@ -69,7 +74,7 @@ const MegaMenu = ({ sections, isActive }: MegaMenuProps) => {
     if (isActive) {
       gsap.to(menu, {
         opacity: 1,
-        y: -10,
+        y: -5,
         visibility: "visible",
         duration: 0.3,
         ease: "power2.out",
@@ -88,7 +93,7 @@ const MegaMenu = ({ sections, isActive }: MegaMenuProps) => {
   return (
     <div
       ref={menuRef}
-      className="absolute left-0 w-full ite bg-white shadow-lg border border-gray-200 z-40 px-10 py-6 grid grid-cols-2 md:grid-cols-4 gap-10"
+      className="absolute left-0 w-full bg-white shadow-lg border border-gray-200 z-30 px-10 py-6 grid grid-cols-2 md:grid-cols-4 gap-10"
       style={{
         fontFamily: "Poppins",
         opacity: 0,
@@ -117,13 +122,167 @@ const MegaMenu = ({ sections, isActive }: MegaMenuProps) => {
   );
 };
 
+// Dropdown Menu Component
+interface DropdownMenuProps {
+  items: { label: string; action?: () => void }[];
+  isActive: boolean;
+  position?: "left" | "right";
+}
+
+const DropdownMenu = ({
+  items,
+  isActive,
+  position = "right",
+}: DropdownMenuProps) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const menu = menuRef.current;
+    if (!menu) return;
+
+    if (isActive) {
+      gsap.to(menu, {
+        opacity: 1,
+        y: 0,
+        visibility: "visible",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    } else {
+      gsap.to(menu, {
+        opacity: 0,
+        y: -10,
+        visibility: "hidden",
+        duration: 0.2,
+        ease: "power2.in",
+      });
+    }
+  }, [isActive]);
+
+  return (
+    <div
+      ref={menuRef}
+      className={`absolute top-full ${
+        position === "right" ? "right-0" : "left-0"
+      } mt-2 bg-white shadow-lg border border-gray-200 z-50 py-2 min-w-[200px] rounded-md`}
+      style={{
+        fontFamily: "Poppins",
+        opacity: 0,
+        visibility: "hidden",
+        transform: "translateY(-10px)",
+      }}
+    >
+      <ul className="space-y-0">
+        {items.map((item, index) => (
+          <li
+            key={index}
+            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black cursor-pointer transition-colors duration-150"
+            onClick={item.action}
+          >
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// User Profile Hook
+const useUserProfile = (user: any) => {
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user?.uid) {
+        setUserProfile(null);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const db = getFirestore();
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        if (userDoc.exists()) {
+          setUserProfile(userDoc.data());
+        } else {
+          // Fallback to user data from auth if no Firestore profile
+          setUserProfile({
+            firstName: user.displayName?.split(" ")[0] || "",
+            lastName: user.displayName?.split(" ")[1] || "",
+            fullName: user.displayName || "",
+            email: user.email,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        // Fallback to basic user info
+        setUserProfile({
+          firstName:
+            user.displayName?.split(" ")[0] || user.email?.split("@")[0] || "",
+          email: user.email,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
+
+  return { userProfile, loading };
+};
+
 // Main Navbar Component
 const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
   const { searchQuery, setSearchQuery } = useSearch();
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [activeHelpDropdown, setActiveHelpDropdown] = useState(false);
+  const [activeProfileDropdown, setActiveProfileDropdown] = useState(false);
   const menuTimeout = useRef<NodeJS.Timeout | null>(null);
+  const helpTimeout = useRef<NodeJS.Timeout | null>(null);
+  const profileTimeout = useRef<NodeJS.Timeout | null>(null);
   const navbarRef = useRef<HTMLDivElement>(null);
+
+  // Auth and Profile
+  const router = useRouter();
+  const { user } = useAuth();
+  const { userProfile, loading: profileLoading } = useUserProfile(user);
+
+  // Help dropdown items
+  const helpItems = [
+    { label: "Order Status" },
+    { label: "Dispatch and Delivery" },
+    { label: "Returns" },
+    { label: "Contact Us" },
+    { label: "Privacy Policy" },
+    { label: "Terms of Sale" },
+    { label: "Terms of Use" },
+    { label: "Send Us Feedback" },
+  ];
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setActiveProfileDropdown(false);
+      router.push("/auth/Login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  // Profile dropdown items for logged in users
+  const profileItems = [
+    { label: "Profile", action: () => router.push("/profile") },
+    { label: "Orders", action: () => router.push("/orders") },
+    { label: "Favourites", action: () => router.push("/wishlist") },
+    { label: "Inbox" },
+    { label: "Experiences" },
+    { label: "Account Settings" },
+    { label: "Log Out", action: handleLogout },
+  ];
 
   useEffect(() => {
     setIsClient(true);
@@ -134,6 +293,8 @@ const Navbar = () => {
         !navbarRef.current.contains(event.target as Node)
       ) {
         setActiveMenu(null);
+        setActiveHelpDropdown(false);
+        setActiveProfileDropdown(false);
       }
     };
 
@@ -148,6 +309,8 @@ const Navbar = () => {
       clearTimeout(menuTimeout.current);
     }
     setActiveMenu(index);
+    setActiveHelpDropdown(false);
+    setActiveProfileDropdown(false);
   };
 
   const handleMenuLeave = () => {
@@ -168,13 +331,92 @@ const Navbar = () => {
     }, 200);
   };
 
+  // Help dropdown handlers
+  const handleHelpEnter = () => {
+    if (helpTimeout.current) {
+      clearTimeout(helpTimeout.current);
+    }
+    setActiveHelpDropdown(true);
+    setActiveMenu(null);
+    setActiveProfileDropdown(false);
+  };
+
+  const handleHelpLeave = () => {
+    helpTimeout.current = setTimeout(() => {
+      setActiveHelpDropdown(false);
+    }, 200);
+  };
+
+  const handleHelpDropdownEnter = () => {
+    if (helpTimeout.current) {
+      clearTimeout(helpTimeout.current);
+    }
+  };
+
+  const handleHelpDropdownLeave = () => {
+    helpTimeout.current = setTimeout(() => {
+      setActiveHelpDropdown(false);
+    }, 200);
+  };
+
+  // Profile dropdown handlers
+  const handleProfileEnter = () => {
+    if (profileTimeout.current) {
+      clearTimeout(profileTimeout.current);
+    }
+    setActiveProfileDropdown(true);
+    setActiveMenu(null);
+    setActiveHelpDropdown(false);
+  };
+
+  const handleProfileLeave = () => {
+    profileTimeout.current = setTimeout(() => {
+      setActiveProfileDropdown(false);
+    }, 200);
+  };
+
+  const handleProfileDropdownEnter = () => {
+    if (profileTimeout.current) {
+      clearTimeout(profileTimeout.current);
+    }
+  };
+
+  const handleProfileDropdownLeave = () => {
+    profileTimeout.current = setTimeout(() => {
+      setActiveProfileDropdown(false);
+    }, 200);
+  };
+
+  const getUserDisplayName = () => {
+    if (profileLoading) return "Loading...";
+
+    if (userProfile?.firstName) {
+      return userProfile.firstName;
+    }
+
+    if (user?.displayName) {
+      return user.displayName.split(" ")[0];
+    }
+
+    if (user?.email) {
+      return user.email.split("@")[0];
+    }
+
+    return "User";
+  };
+
   if (!isClient) return null;
 
   return (
     <div className="sticky top-0 z-50" ref={navbarRef}>
-      <div className="flex justify-between items-center z-50 text-black  bg-[#f5f5f5] relative px-10 ">
+      {/* Top Bar */}
+      <div className="flex justify-between items-center z-50 text-black bg-[#f5f5f5] relative px-10">
         <div className="flex items-center">
-          <img className="w-[18px]" src="/img/air-jordan-logo.png" alt="" />
+          <img
+            className="w-[18px]"
+            src="/img/air-jordan-logo.png"
+            alt="Jordan Logo"
+          />
         </div>
         <div>
           <ul
@@ -184,57 +426,83 @@ const Navbar = () => {
               fontWeight: "600",
             }}
           >
-            <li>Find a Store</li> |{" "}
-            <li>
-              Help
-              {/* <select
-                className="cursor-pointer w-[70px] rounded-md px-3 py-2        "
-                name="help"
-                id="help"
-                style={{
-                  fontFamily: "Poppins",
-                  fontSize: "12px",
-                  fontWeight: "600",
-                }}
+            <li className="hover:text-gray-600 cursor-pointer">Find a Store</li>
+            <li className="text-gray-400">|</li>
+
+            {/* Help with Dropdown */}
+            <li
+              className="relative"
+              onMouseEnter={handleHelpEnter}
+              onMouseLeave={handleHelpLeave}
+            >
+              <span className="hover:text-gray-600 cursor-pointer">Help</span>
+              <div
+                onMouseEnter={handleHelpDropdownEnter}
+                onMouseLeave={handleHelpDropdownLeave}
               >
-                <option value="" disabled selected>
-                  Help
-                </option>
-                <option value="order" className="py-2 ">
-                  Order Status
-                </option>
-                <option value="delivery" className="py-2 ">
-                  Dispatch and Delivery
-                </option>
-                <option value="returns" className="py-2 ">
-                  Returns
-                </option>
-                <option value="contact" className="py-2 ">
-                  Contact Us
-                </option>
-                <option value="terms-sale" className="py-2 ">
-                  Terms of Sale
-                </option>
-                <option value="privacy" className="py-2 ">
-                  Privacy Policy
-                </option>
-                <option value="terms-use" className="py-2 ">
-                  Terms of Use
-                </option>
-                <option value="feedback" className="py-2 ">
-                  Send Us Feedback
-                </option>
-              </select> */}
-            </li>{" "}
-            |
-            <li>
-              Hi, Daksh <PermIdentityOutlinedIcon className="ml-2 mb-[2px]" />
+                <DropdownMenu
+                  items={helpItems}
+                  isActive={activeHelpDropdown}
+                  position="right"
+                />
+              </div>
             </li>
+            <li className="text-gray-400">|</li>
+
+            {user ? (
+              <>
+                {/* Profile with Dropdown */}
+                <li
+                  className="flex items-center relative"
+                  onMouseEnter={handleProfileEnter}
+                  onMouseLeave={handleProfileLeave}
+                >
+                  <span className="mr-1">Hi,</span>
+                  <span className="font-semibold hover:text-gray-600 cursor-pointer">
+                    {getUserDisplayName()}
+                  </span>
+                  <PermIdentityOutlinedIcon className="ml-2 mb-[2px]" />
+
+                  <div
+                    onMouseEnter={handleProfileDropdownEnter}
+                    onMouseLeave={handleProfileDropdownLeave}
+                  >
+                    <DropdownMenu
+                      items={profileItems}
+                      isActive={activeProfileDropdown}
+                      position="right"
+                    />
+                  </div>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    href="/auth/Login"
+                    className="hover:text-gray-600 cursor-pointer"
+                  >
+                    Sign In
+                  </Link>
+                </li>
+                <li className="text-gray-400">|</li>
+                <li>
+                  <Link
+                    href="/auth/Signup"
+                    className="hover:text-gray-600 cursor-pointer"
+                  >
+                    Join Us
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
+
+      {/* Main Navigation */}
       <nav
-        className="flex justify-between items-center z-50 text-black p-2 bg-white relative"
+        className="flex justify-between items-center z-40 text-black p-2 bg-white relative"
         style={{
           border: "2px solid white",
           borderTop: "none",
@@ -245,25 +513,25 @@ const Navbar = () => {
         <Link href="/">
           <img
             src="/img/logo.png"
-            alt="Logo"
-            className="cursor-pointer w-[70px] ml-2"
+            alt="Nike Logo"
+            className="cursor-pointer w-[70px] ml-2 hover:opacity-80 transition-opacity"
           />
         </Link>
 
         {/* Navigation Links with Mega Menu */}
-        <div className="flex  gap-4">
+        <div className="flex gap-4">
           <ul
-            className="flex  gap-6"
+            className="flex gap-6"
             style={{ fontFamily: "Poppins", textUnderlineOffset: "5px" }}
           >
             {navMenus.map((menu, idx) => (
               <li
                 key={idx}
-                className="relative group  "
+                className="relative group"
                 onMouseEnter={() => handleMenuEnter(idx)}
                 onMouseLeave={handleMenuLeave}
               >
-                <span className="hover:underline cursor-pointer">
+                <span className="hover:underline cursor-pointer font-medium transition-all duration-200">
                   {menu.title}
                 </span>
               </li>
@@ -286,32 +554,34 @@ const Navbar = () => {
             />
           </Search>
 
-          {/* Add Product */}
-          <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full">
-            <Link href="/components/RegistrationForm">
-              <AddIcon className="text-3xl m-2 border-2 rounded-2xl " />
-            </Link>
-          </li>
+          {/* Add Product - Only show if user is logged in */}
+          {user && (
+            <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
+              <Link href="/components/RegistrationForm">
+                <AddIcon className="text-3xl m-2 border-2 rounded-2xl" />
+              </Link>
+            </li>
+          )}
 
           {/* Wishlist */}
-          <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full">
-            <Link href="/">
-              <FavoriteBorderOutlinedIcon className="text-3xl m-2 " />
+          <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
+            <Link href="/wishlist">
+              <FavoriteBorderOutlinedIcon className="text-3xl m-2" />
             </Link>
           </li>
 
           {/* Cart */}
-          <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full">
-            <Link href="/">
-              <ShoppingBagOutlinedIcon className="text-3xl m-2 " />
+          <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
+            <Link href="/cart">
+              <ShoppingBagOutlinedIcon className="text-3xl m-2" />
             </Link>
           </li>
         </ul>
       </nav>
 
-      {/* Mega Menu Container - Now only renders the active menu */}
+      {/* Mega Menu Container */}
       <div
-        className="relative w-full "
+        className="relative w-full"
         onMouseEnter={handleMegaMenuEnter}
         onMouseLeave={handleMegaMenuLeave}
       >

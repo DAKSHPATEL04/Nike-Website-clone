@@ -179,7 +179,7 @@ const ShopNow = () => {
                 width: "420px",
               }}
             >
-              <Link href={`/products/${product._id}`}>
+              <Link href={`/components/MainPage`}>
                 <div className="rounded-lg hover:scale-105 transition-transform duration-300 ">
                   <div className="h-110 flex items-center justify-center">
                     <img
