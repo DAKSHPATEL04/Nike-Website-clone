@@ -184,7 +184,49 @@ const Navbar = () => {
               fontWeight: "600",
             }}
           >
-            <li>Find a Store</li> | <li>Help</li> |
+            <li>Find a Store</li> |{" "}
+            <li>
+              Help
+              {/* <select
+                className="cursor-pointer w-[70px] rounded-md px-3 py-2        "
+                name="help"
+                id="help"
+                style={{
+                  fontFamily: "Poppins",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                <option value="" disabled selected>
+                  Help
+                </option>
+                <option value="order" className="py-2 ">
+                  Order Status
+                </option>
+                <option value="delivery" className="py-2 ">
+                  Dispatch and Delivery
+                </option>
+                <option value="returns" className="py-2 ">
+                  Returns
+                </option>
+                <option value="contact" className="py-2 ">
+                  Contact Us
+                </option>
+                <option value="terms-sale" className="py-2 ">
+                  Terms of Sale
+                </option>
+                <option value="privacy" className="py-2 ">
+                  Privacy Policy
+                </option>
+                <option value="terms-use" className="py-2 ">
+                  Terms of Use
+                </option>
+                <option value="feedback" className="py-2 ">
+                  Send Us Feedback
+                </option>
+              </select> */}
+            </li>{" "}
+            |
             <li>
               Hi, Daksh <PermIdentityOutlinedIcon className="ml-2 mb-[2px]" />
             </li>

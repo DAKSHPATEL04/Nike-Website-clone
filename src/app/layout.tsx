@@ -5,6 +5,7 @@ import Queryprovider from "../utils/Queryprovider";
 
 import { SearchProvider } from "@/context/searchContex";
 import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "@/shared/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,9 @@ export default function RootLayout({
         <Queryprovider>
           <SearchProvider>
             <AuthProvider>
+              <Navbar />
               {children}
+
               {/* <Footer /> */}
             </AuthProvider>
           </SearchProvider>
