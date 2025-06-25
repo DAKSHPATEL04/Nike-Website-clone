@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useSearch } from "@/context/searchContex";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { navMenus } from "@/app/data/navMenus";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 
 // Styled Search Bar Components
 const Search = styled("div")(({ theme }) => ({
@@ -171,6 +172,25 @@ const Navbar = () => {
 
   return (
     <div className="sticky top-0 z-50" ref={navbarRef}>
+      <div className="flex justify-between items-center z-50 text-black  bg-[#f5f5f5] relative px-10 ">
+        <div className="flex items-center">
+          <img className="w-[18px]" src="/img/air-jordan-logo.png" alt="" />
+        </div>
+        <div>
+          <ul
+            className="flex flex-row items-center gap-4"
+            style={{
+              fontSize: "12px",
+              fontWeight: "600",
+            }}
+          >
+            <li>Find a Store</li> | <li>Help</li> |
+            <li>
+              Hi, Daksh <PermIdentityOutlinedIcon className="ml-2 mb-[2px]" />
+            </li>
+          </ul>
+        </div>
+      </div>
       <nav
         className="flex justify-between items-center z-50 text-black p-2 bg-white relative"
         style={{
