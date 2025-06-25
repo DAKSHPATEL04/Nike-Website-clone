@@ -2,26 +2,39 @@
 
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { app } from "../../firebase";
+import { useEffect, useState } from "react";
+import { app, auth } from "../../firebase";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useAuth } from "@/context/AuthContext";
 
 const SignIn = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const auth = getAuth(app);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      alert("Successfully created account!");
-      router.push("/auth/Login");
-    } catch (createError) {
-      alert("Authentication failed: " + (createError as Error).message);
+      router.push("/");
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,7 +43,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white justify-start items-center w-full h-screen pt-8">
+    <div className="flex flex-col bg-white justify-start items-center w-full h-screen pt-8 ">
       <div className="flex flex-col justify-start items-start">
         <div className="flex flex-1/2 justify-start items-start">
           <div>
@@ -56,6 +69,7 @@ const SignIn = () => {
             </div>
           </div>
         </div>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
         <form onSubmit={handleSubmit} className="w-full">
           <div
             className="text-black w-[450px] flex flex-col justify-center items-center py-7"
@@ -67,7 +81,7 @@ const SignIn = () => {
           >
             <h1>Enter your email & password to join us or sign in.</h1>
             <div
-              className="flex absolute top-78 right-180"
+              className="flex absolute top-60 right-202"
               style={{
                 fontFamily: "poppins",
                 fontSize: "18px",
@@ -140,8 +154,9 @@ const SignIn = () => {
                 fontWeight: "500",
               }}
               type="submit"
+              disabled={loading}
             >
-              Continue
+              {loading ? "Createing Account..." : "Continue"}
             </button>
           </div>
         </form>

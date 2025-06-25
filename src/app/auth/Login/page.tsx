@@ -1,28 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useRouter } from "next/navigation";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from "../../firebase";
+import { app, auth } from "../../firebase";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const auth = getAuth(app);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Successfully signed in!");
       router.push("/");
-    } catch (signInError) {
-      console.error("Error Signing in:", signInError);
-      alert("Authentication failed: " + (signInError as Error).message);
+    } catch (error) {
+      setError((error as Error).message);
+      console.error("Authentication failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,6 +70,7 @@ const Login = () => {
             </div>
           </div>
         </div>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit} className="w-full">
           <div
@@ -146,6 +160,7 @@ const Login = () => {
                 fontWeight: "500",
               }}
               type="submit"
+              disabled={loading}
             >
               Sign In
             </button>
