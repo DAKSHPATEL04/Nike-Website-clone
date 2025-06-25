@@ -15,6 +15,7 @@ export default function Home() {
   return (
     <div className=" ">
       <ProtectedRoute>
+        <Navbar />
         <HomePage />
         <TheLetest />
         <Featured />

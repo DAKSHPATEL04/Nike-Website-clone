@@ -16,6 +16,7 @@ import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Navbar from "@/shared/Navbar";
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -139,6 +140,7 @@ const MainPage = () => {
         <Spiner />
       ) : (
         <div>
+          <Navbar />
           <div className="flex bg-white min-h-screen relative">
             {/* Filter Sidebar */}
             <div
@@ -289,7 +291,7 @@ const MainPage = () => {
             >
               <div className="p-6">
                 {/* Header */}
-                <div className="flex flex-col py-3 justify-center items-center z-40 text-black  bg-[#f5f5f5]  ">
+                <div className="flex flex-col  justify-center items-center z-40 py-4 text-black  bg-[#f5f5f5]  ">
                   <div className="flex flex-col justify-center items-center">
                     <h1
                       className=""
@@ -369,7 +371,7 @@ const MainPage = () => {
                               <img
                                 src={product.product_image}
                                 alt={product.product_name}
-                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                                className="w-full h-full object-contain "
                               />
                             </div>
 
@@ -409,21 +411,20 @@ const MainPage = () => {
                           </div>
                         </Link>
 
-                        {/* Action Buttons */}
-                        <div className="flex justify-center items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {/* Action Buttons - Updated UI */}
+                        <div className="flex   justify-center items-center gap-3 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <Link
                             href={`/components/RegistrationForm/${product._id}`}
+                            className="p-2 bg-green-400 text-black rounded-full hover:bg-gray-100 transition-colors border border-gray-300 shadow-sm"
                           >
-                            <button className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">
-                              <EditIcon className="text-sm" />
-                            </button>
+                            <EditIcon className="text-sm" />
                           </Link>
                           <button
                             onClick={(e) => {
                               e.preventDefault();
                               setSelectedProductId(product._id);
                             }}
-                            className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                            className="p-2 bg-red-500 text-black rounded-full hover:bg-gray-800 transition-colors border border-black shadow-sm"
                           >
                             <DeleteIcon className="text-sm" />
                           </button>

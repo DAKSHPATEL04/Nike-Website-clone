@@ -2,6 +2,7 @@
 
 import Spiner from "@/app/Spiner";
 import { prodectsHook } from "@/hooks/productsHook";
+import Navbar from "@/shared/Navbar";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -109,78 +110,78 @@ const RegistrationForm = () => {
   return isFetching || isLoading ? (
     <Spiner />
   ) : (
-    <div className="flex-1/2 flex justify-center items-center gap-25">
-      <div className="max-w-8xl max-sm:max-w-lg mx-5 p-6 mt-5 my-4 border-2 rounded">
-        <h1 className="text-white text-2xl font-bold mb-6">
+    <div className="flex-1/2 flex justify-center bg-white h-screen items-center gap-25">
+      <div className="max-w-8xl max-sm:max-w-lg mx-5 p-6 mt-5 my-4 border-2 border-black rounded">
+        <h1 className="text-black text-2xl font-bold mb-6">
           {editId ? "EDIT PRODUCT" : "ADD PRODUCT"}
         </h1>
         <form onSubmit={handleSubmit}>
           <div className="grid sm:grid-cols-2 gap-8">
             {/* Inputs */}
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Name:
               </label>
               <input
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
                 type="text"
-                className="bg-transparent w-full text-white text-sm px-4 py-3 rounded-md border-2"
+                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
                 placeholder="Enter product name"
                 required
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Price:
               </label>
               <input
                 value={productPrice}
                 onChange={(e) => setProductPrice(e.target.value)}
                 type="text"
-                className="bg-transparent w-full text-white text-sm px-4 py-3 rounded-md border-2"
+                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
                 placeholder="Enter product price"
                 required
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Description:
               </label>
               <textarea
                 value={productDescription}
                 onChange={(e) => setProductDescription(e.target.value)}
                 rows={4}
-                className="bg-transparent w-full text-white text-sm px-4 py-3 rounded-md border-2"
+                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
                 placeholder="Enter description"
                 required
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Image:
               </label>
               <input
                 value={productImage}
                 onChange={(e) => setProductImage(e.target.value)}
                 type="text"
-                className="bg-transparent w-full text-white text-sm px-4 py-3 rounded-md border-2"
+                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
                 required
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Rating:
               </label>
               <input
                 value={productRating}
                 onChange={(e) => setProductRating(e.target.value)}
                 type="number"
-                className="bg-transparent w-full text-white text-sm px-4 py-3 rounded-md border-2"
+                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
                 placeholder="Enter rating"
                 min="0"
                 max="5"
@@ -190,7 +191,7 @@ const RegistrationForm = () => {
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">
+              <label className="text-black text-sm font-medium mb-2 block">
                 Product Status (New):
               </label>
               <div className="flex items-center gap-2">
@@ -200,7 +201,7 @@ const RegistrationForm = () => {
                   onChange={(e) => setNewProduct(e.target.checked)}
                   className="w-5 h-5"
                 />
-                <span className="text-white">{newProduct ? "Yes" : "No"}</span>
+                <span className="text-black">{newProduct ? "Yes" : "No"}</span>
               </div>
             </div>
           </div>
@@ -221,7 +222,7 @@ const RegistrationForm = () => {
           <img
             src={productImage}
             alt="Preview"
-            className="w-100 h-100 mt-4 rounded-md object-cover border"
+            className="w-100 h-100 mt-4 rounded-md object-cover  border-2 border-black"
           />
         </div>
       )}
