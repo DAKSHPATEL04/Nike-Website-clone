@@ -289,7 +289,7 @@ const Login = () => {
           </div>
 
           {/* Google Sign In Button (Optional) */}
-          <div className="w-full">
+          <div className="w-full text-black">
             <button
               type="button"
               onClick={handleGoogleSignIn}
