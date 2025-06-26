@@ -8,6 +8,7 @@ import { auth } from "../../firebase";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 
 const SignUp = () => {
   const router = useRouter();
@@ -126,17 +127,21 @@ const SignUp = () => {
           </div>
           <div className="flex gap-4 items-center">
             <div>
-              <img
+              <Image
                 src="/img/logo.png"
                 alt="Nike Logo"
                 className="w-12 h-auto"
+                width={100}
+                height={100}
               />
             </div>
             <div>
-              <img
+              <Image
                 src="/img/air-jordan-logo.png"
                 alt="Air Jordan Logo"
                 className="w-8 h-auto"
+                width={100}
+                height={100}
               />
             </div>
           </div>

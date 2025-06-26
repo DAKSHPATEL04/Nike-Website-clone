@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { prodectsHook } from "@/hooks/productsHook";
 import { useSearch } from "@/context/searchContex";
 import { Box, Modal, Typography } from "@mui/material";
+import Image from "next/image";
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -126,10 +127,12 @@ const MainPage = () => {
                     </h1>
 
                     <div className="flex justify-center mb-4">
-                      <img
+                      <Image
                         src={product.product_image}
                         alt={product.product_name}
                         className="w-[250px] h-[250px] object-cover rounded-md"
+                        width={250}
+                        height={250}
                       />
                     </div>
                     <div className="text-sm space-y-2 text-gray-800">

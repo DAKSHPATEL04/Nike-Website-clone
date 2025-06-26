@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 const HomePage = () => {
   return (
     <>
@@ -29,7 +31,12 @@ const HomePage = () => {
       </div>
       <div className="flex bg-white justify-center items-center w-full h-screen">
         <div className="flex flex-col  justify-center items-center w-[80%] ">
-          <img src="/img/nike-just-do-it.png" alt="home image" />
+          <Image
+            src="/img/nike-just-do-it.png"
+            alt="home image"
+            width={2000}
+            height={1000}
+          />
           <div className="text-black flex flex-col justify-center items-center">
             <h3 className="font-bold mt-4 ">Breaking4</h3>
             <h1
