@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DeleteProduct } from "@/services/productApi";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import { prodectsHook } from "@/hooks/productsHook";
+import { useProductsHook } from "@/hooks/productsHook";
 import { useSearch } from "@/context/searchContex";
 import { Box, Modal, Typography } from "@mui/material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
@@ -43,7 +43,7 @@ const MainPage = () => {
     null
   );
 
-  const { data = { products: [] }, isLoading } = prodectsHook();
+  const { data = { products: [] }, isLoading } = useProductsHook();
   const { searchQuery } = useSearch();
 
   // Toggle accordion sections
@@ -295,7 +295,7 @@ const MainPage = () => {
                 </nav>
                 <div className="flex justify-between items-center">
                   <h1 className="text-2xl font-bold text-black">
-                    Men's Nike Dunk Shoes ({sortedProducts.length})
+                    Men&apos;s Nike Dunk Shoes ({sortedProducts.length})
                   </h1>
                   <div className="flex gap-4 text-black">
                     <button
@@ -395,7 +395,7 @@ const MainPage = () => {
                               {product.product_name}
                             </h3>
                             <p className="text-gray-600 text-xs mt-1">
-                              Men's Shoes • 1 Colour
+                              Men&apos;s Shoes • 1 Colour
                             </p>
                             <div className="mt-2">
                               <span className="text-black font-semibold">

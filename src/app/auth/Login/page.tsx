@@ -164,7 +164,7 @@ const Login = () => {
                 onClick={() => router.push("/auth/Signup")}
                 className="text-gray-600 hover:underline"
               >
-                Don't have an account? Join Us
+                Don&apos;t have an account? Join Us
               </button>
             </div>
           </div>
@@ -253,7 +253,7 @@ const Login = () => {
                 fontWeight: "400",
               }}
             >
-              By logging in, you agree to Nike's{" "}
+              By logging in, you agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Terms of Use
               </span>{" "}

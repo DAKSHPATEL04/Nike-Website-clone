@@ -279,7 +279,7 @@ const SignUp = () => {
                 fontWeight: "400",
               }}
             >
-              By creating an account, I agree to Nike's{" "}
+              By creating an account, I agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Privacy Policy
               </span>{" "}

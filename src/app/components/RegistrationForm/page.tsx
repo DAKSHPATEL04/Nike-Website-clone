@@ -1,7 +1,7 @@
 "use client";
 
 import Spiner from "@/app/Spiner";
-import { prodectsHook } from "@/hooks/productsHook";
+import { useProductsHook } from "@/hooks/productsHook";
 import Navbar from "@/shared/Navbar";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
 
-  const { data = { products: [] }, isLoading: isFetching } = prodectsHook();
+  const { data = { products: [] }, isLoading: isFetching } = useProductsHook();
   const products = data.products;
 
   const resetForm = () => {

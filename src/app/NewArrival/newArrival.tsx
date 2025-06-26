@@ -13,7 +13,7 @@ const newArrival = () => {
               fontWeight: "500",
             }}
           >
-            Don't Miss
+            Don&apos;t Miss
           </h1>
         </div>
         <div
@@ -33,7 +33,7 @@ const newArrival = () => {
                   fontWeight: "500",
                 }}
               >
-                Women's Air Jordan Collection
+                Women&apos;s Air Jordan Collection
               </h3>
               <h1
                 className=""
@@ -43,7 +43,7 @@ const newArrival = () => {
                   fontSize: "60px",
                 }}
               >
-                SHOW 'EM UP
+                SHOW &apos;EM UP
               </h1>
               <p style={{ fontFamily: "poppins" }}>
                 Crafted for your flyest self, the new Air Jordan Collection

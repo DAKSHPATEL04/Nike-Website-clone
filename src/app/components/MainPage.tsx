@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DeleteProduct } from "@/services/productApi";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import { prodectsHook } from "@/hooks/productsHook";
+import { useProductsHook } from "@/hooks/productsHook";
 import { useSearch } from "@/context/searchContex";
 import { Box, Modal, Typography } from "@mui/material";
 import Image from "next/image";
@@ -28,7 +28,7 @@ const MainPage = () => {
     null
   );
 
-  const { data = { products: [] }, isLoading } = prodectsHook();
+  const { data = { products: [] }, isLoading } = useProductsHook();
   const { searchQuery } = useSearch();
 
   // Filter logic
