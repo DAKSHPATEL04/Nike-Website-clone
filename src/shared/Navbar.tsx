@@ -275,7 +275,7 @@ const Navbar = () => {
 
   // Profile dropdown items for logged in users
   const profileItems = [
-    { label: "Profile", action: () => router.push("/profile") },
+    { label: "Profile", action: () => router.push("/components/profile") },
     { label: "Orders", action: () => router.push("/orders") },
     { label: "Favourites", action: () => router.push("/wishlist") },
     { label: "Inbox" },
