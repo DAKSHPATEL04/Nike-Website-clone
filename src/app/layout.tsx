@@ -35,7 +35,6 @@ export default function RootLayout({
         <Queryprovider>
           <SearchProvider>
             <AuthProvider>
-              <Navbar />
               {children}
 
               {/* <Footer /> */}

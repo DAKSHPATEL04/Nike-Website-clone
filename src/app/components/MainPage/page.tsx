@@ -18,6 +18,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
+import Navbar from "@/shared/Navbar";
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -138,6 +139,7 @@ const MainPage = () => {
 
   return (
     <>
+      <Navbar />
       {isLoading ? (
         <Spiner />
       ) : (

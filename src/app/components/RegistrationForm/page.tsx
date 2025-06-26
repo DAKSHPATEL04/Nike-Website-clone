@@ -110,123 +110,128 @@ const RegistrationForm = () => {
   return isFetching || isLoading ? (
     <Spiner />
   ) : (
-    <div className="flex-1/2 flex justify-center bg-white h-screen items-center gap-25">
-      <div className="max-w-8xl max-sm:max-w-lg mx-5 p-6 mt-5 my-4 border-2 border-black rounded">
-        <h1 className="text-black text-2xl font-bold mb-6">
-          {editId ? "EDIT PRODUCT" : "ADD PRODUCT"}
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="grid sm:grid-cols-2 gap-8">
-            {/* Inputs */}
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Name:
-              </label>
-              <input
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-                type="text"
-                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
-                placeholder="Enter product name"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Price:
-              </label>
-              <input
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
-                type="text"
-                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
-                placeholder="Enter product price"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Description:
-              </label>
-              <textarea
-                value={productDescription}
-                onChange={(e) => setProductDescription(e.target.value)}
-                rows={4}
-                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
-                placeholder="Enter description"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Image:
-              </label>
-              <input
-                value={productImage}
-                onChange={(e) => setProductImage(e.target.value)}
-                type="text"
-                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Rating:
-              </label>
-              <input
-                value={productRating}
-                onChange={(e) => setProductRating(e.target.value)}
-                type="number"
-                className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
-                placeholder="Enter rating"
-                min="0"
-                max="5"
-                step="0.1"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-black text-sm font-medium mb-2 block">
-                Product Status (New):
-              </label>
-              <div className="flex items-center gap-2">
+    <>
+      <Navbar />
+      <div className="flex-1/2 flex justify-center bg-white h-screen items-center gap-25">
+        <div className="max-w-8xl max-sm:max-w-lg mx-5 p-6 mt-5 my-4 border-2 border-black rounded">
+          <h1 className="text-black text-2xl font-bold mb-6">
+            {editId ? "EDIT PRODUCT" : "ADD PRODUCT"}
+          </h1>
+          <form onSubmit={handleSubmit}>
+            <div className="grid sm:grid-cols-2 gap-8">
+              {/* Inputs */}
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Name:
+                </label>
                 <input
-                  type="checkbox"
-                  checked={newProduct}
-                  onChange={(e) => setNewProduct(e.target.checked)}
-                  className="w-5 h-5"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                  type="text"
+                  className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
+                  placeholder="Enter product name"
+                  required
                 />
-                <span className="text-black">{newProduct ? "Yes" : "No"}</span>
+              </div>
+
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Price:
+                </label>
+                <input
+                  value={productPrice}
+                  onChange={(e) => setProductPrice(e.target.value)}
+                  type="text"
+                  className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
+                  placeholder="Enter product price"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Description:
+                </label>
+                <textarea
+                  value={productDescription}
+                  onChange={(e) => setProductDescription(e.target.value)}
+                  rows={4}
+                  className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
+                  placeholder="Enter description"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Image:
+                </label>
+                <input
+                  value={productImage}
+                  onChange={(e) => setProductImage(e.target.value)}
+                  type="text"
+                  className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Rating:
+                </label>
+                <input
+                  value={productRating}
+                  onChange={(e) => setProductRating(e.target.value)}
+                  type="number"
+                  className="bg-transparent w-full text-black text-sm px-4 py-3 rounded-md border-2"
+                  placeholder="Enter rating"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-black text-sm font-medium mb-2 block">
+                  Product Status (New):
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={newProduct}
+                    onChange={(e) => setNewProduct(e.target.checked)}
+                    className="w-5 h-5"
+                  />
+                  <span className="text-black">
+                    {newProduct ? "Yes" : "No"}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-12">
-            <button
-              type="submit"
-              className="mx-auto block min-w-32 py-3 px-6 text-sm font-medium tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              {editId ? "UPDATE" : "ADD"}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {productImage && (
-        <div>
-          <img
-            src={productImage}
-            alt="Preview"
-            className="w-100 h-100 mt-4 rounded-md object-cover  border-2 border-black"
-          />
+            <div className="mt-12">
+              <button
+                type="submit"
+                className="mx-auto block min-w-32 py-3 px-6 text-sm font-medium tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                {editId ? "UPDATE" : "ADD"}
+              </button>
+            </div>
+          </form>
         </div>
-      )}
-    </div>
+
+        {productImage && (
+          <div>
+            <img
+              src={productImage}
+              alt="Preview"
+              className="w-100 h-100 mt-4 rounded-md object-cover  border-2 border-black"
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

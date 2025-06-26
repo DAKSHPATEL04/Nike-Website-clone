@@ -8,13 +8,15 @@ import ShopNow from "./shopNow/shopNow";
 import TrendingNow from "./TrendingNow/TrendingNow";
 import ShopBySport from "./ShopBySport/ShopBySport";
 import Footer from "@/shared/Footer";
-import Navbar from "@/shared/Navbar";
+
 import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "@/shared/Navbar";
 
 export default function Home() {
   return (
     <div className=" ">
       <ProtectedRoute>
+        <Navbar />
         <HomePage />
         <TheLetest />
         <Featured />
