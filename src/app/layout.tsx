@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1.0",
-  title: "Nike Clone",
-  description: "Nike Clone",
+  title: "Nike",
+  description: "Nike",
 };
 
 export default function RootLayout({
