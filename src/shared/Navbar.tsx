@@ -58,6 +58,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  images: string[];
+  gender?: string;
+  description?: string;
+  rating?: number;
+  is_new?: boolean;
+}
+
 // Mega Menu Component
 interface MegaMenuProps {
   sections: { heading: string; items: string[] }[];
@@ -185,6 +197,177 @@ const DropdownMenu = ({
   );
 };
 
+// Search Suggestions Component
+const SearchSuggestions = ({
+  isActive,
+  searchQuery,
+  onClose,
+  products,
+}: {
+  isActive: boolean;
+  searchQuery: string;
+  onClose: () => void;
+  products: Product[];
+}) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  // Get top 4 popular products for suggestions
+  const topSuggestions = products
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 4)
+    .map((product) => product.name);
+
+  // Filter products safely
+  const filteredProducts = Array.isArray(products)
+    ? products.filter((product) => {
+        if (!product || !product.name) return false;
+        return product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+    : [];
+
+  useEffect(() => {
+    const menu = menuRef.current;
+    if (!menu) return;
+
+    if (isActive) {
+      gsap.fromTo(
+        menu,
+        { opacity: 0, y: -20, x: -20 },
+        {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          visibility: "visible",
+          duration: 0.3,
+          ease: "power2.out",
+        }
+      );
+    } else {
+      gsap.to(menu, {
+        opacity: 0,
+        y: -10,
+        x: 20,
+        visibility: "hidden",
+        duration: 0.2,
+        ease: "power2.in",
+      });
+    }
+  }, [isActive]);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    const suggestedProduct = products.find(
+      (p) => p.name.toLowerCase() === suggestion.toLowerCase()
+    );
+    if (suggestedProduct) {
+      router.push(`/components/MainPage?id=${suggestedProduct.id}`);
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      ref={menuRef}
+      className="absolute right-0 mt-2 w-[500px] bg-white shadow-lg border border-gray-200 z-50 rounded-lg overflow-hidden"
+      style={{
+        opacity: 0,
+        visibility: "hidden",
+        transform: "translateY(-10px)",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Top Suggestions */}
+      {searchQuery === "" && (
+        <div className="p-4 border-b border-gray-200">
+          <h3 className="font-semibold text-gray-900 text-sm mb-2">
+            Top Suggestions
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {topSuggestions.map((suggestion, index) => (
+              <div
+                key={index}
+                className="px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer hover:bg-gray-200"
+                onClick={() => handleSuggestionClick(suggestion)}
+              >
+                {suggestion}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Products */}
+      <div className="max-h-[500px] overflow-y-auto">
+        {filteredProducts.length > 0 ? (
+          <div className="space-y-2 p-4">
+            {filteredProducts.slice(0, 4).map((product) => (
+              <div
+                key={product.id}
+                className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200 cursor-pointer"
+                onClick={() => {
+                  router.push(`/components/MainPage?id=${product.id}`);
+                  onClose();
+                }}
+              >
+                <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                  <img
+                    src={product.images?.[0] || "/img/placeholder-product.jpg"}
+                    alt={product.name || "Product"}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "/img/placeholder-product.jpg";
+                    }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900 text-sm">
+                    {product.name || "Unknown Product"}
+                  </h4>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {product.category || "Uncategorized"}
+                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-sm font-semibold">
+                      ₹ {product.price?.toLocaleString() || "N/A"}
+                    </p>
+                    {product.is_new && (
+                      <span className="bg-black text-white text-xs px-2 py-1 rounded">
+                        New
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : searchQuery ? (
+          <div className="p-4 text-center text-gray-500">
+            No products found for "{searchQuery}"
+          </div>
+        ) : (
+          <div className="p-4 text-center text-gray-500">
+            Start typing to search products
+          </div>
+        )}
+      </div>
+
+      {/* View all results */}
+      {filteredProducts.length > 0 && (
+        <div className="p-4 text-center bg-gray-50 border-t border-gray-200">
+          <Link
+            href={`/search?q=${encodeURIComponent(searchQuery)}`}
+            onClick={onClose}
+            className="text-sm font-medium text-gray-700 hover:text-black"
+          >
+            View all results for "{searchQuery}"
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Main Navbar Component
 const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
@@ -192,14 +375,54 @@ const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [activeHelpDropdown, setActiveHelpDropdown] = useState(false);
   const [activeProfileDropdown, setActiveProfileDropdown] = useState(false);
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const menuTimeout = useRef<NodeJS.Timeout | null>(null);
   const helpTimeout = useRef<NodeJS.Timeout | null>(null);
   const profileTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // Auth and Profile using updated context
   const router = useRouter();
   const { user, userProfile, profileLoading, isOnline } = useAuth();
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          "https://react-trainee-api.onrender.com/get/products"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        // Transform the API data to match our Product interface
+        const transformedProducts =
+          data.products?.map((product: any) => ({
+            id: product.id || product._id,
+            name: product.product_name || product.name,
+            category: product.category || "Shoes",
+            price: product.product_data?.prize || product.price || 0,
+            images: [product.product_image || "/img/placeholder-product.jpg"],
+            description: product.product_data?.description || "",
+            rating: product.product_data?.rating || 0,
+            is_new: product.product_data?.is_new || false,
+          })) || [];
+        setProducts(transformedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Help dropdown items
   const helpItems = [
@@ -245,6 +468,7 @@ const Navbar = () => {
         setActiveMenu(null);
         setActiveHelpDropdown(false);
         setActiveProfileDropdown(false);
+        setShowSearchSuggestions(false);
       }
     };
 
@@ -261,6 +485,7 @@ const Navbar = () => {
     setActiveMenu(index);
     setActiveHelpDropdown(false);
     setActiveProfileDropdown(false);
+    setShowSearchSuggestions(false);
   };
 
   const handleMenuLeave = () => {
@@ -289,6 +514,7 @@ const Navbar = () => {
     setActiveHelpDropdown(true);
     setActiveMenu(null);
     setActiveProfileDropdown(false);
+    setShowSearchSuggestions(false);
   };
 
   const handleHelpLeave = () => {
@@ -317,6 +543,7 @@ const Navbar = () => {
     setActiveProfileDropdown(true);
     setActiveMenu(null);
     setActiveHelpDropdown(false);
+    setShowSearchSuggestions(false);
   };
 
   const handleProfileLeave = () => {
@@ -335,6 +562,34 @@ const Navbar = () => {
     profileTimeout.current = setTimeout(() => {
       setActiveProfileDropdown(false);
     }, 200);
+  };
+
+  // Search handlers
+  const handleSearchFocus = () => {
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+    setShowSearchSuggestions(true);
+    setActiveMenu(null);
+    setActiveHelpDropdown(false);
+    setActiveProfileDropdown(false);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setShowSearchSuggestions(true);
+  };
+
+  const closeSearchSuggestions = () => {
+    searchTimeout.current = setTimeout(() => {
+      setShowSearchSuggestions(false);
+    }, 200);
+  };
+
+  const keepSuggestionsOpen = () => {
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
   };
 
   const getUserDisplayName = () => {
@@ -502,18 +757,34 @@ const Navbar = () => {
 
         {/* Search & Icons */}
         <ul className="flex gap-4 items-center">
-          {/* Search Box */}
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
+          {/* Search Box with Suggestions */}
+          <li className="relative">
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                onBlur={closeSearchSuggestions}
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+
+            <div
+              onMouseEnter={keepSuggestionsOpen}
+              onMouseLeave={closeSearchSuggestions}
+            >
+              <SearchSuggestions
+                isActive={showSearchSuggestions}
+                searchQuery={searchQuery}
+                onClose={() => setShowSearchSuggestions(false)}
+                products={products}
+              />
+            </div>
+          </li>
 
           {/* Add Product - Only show if user is logged in */}
           {user && (
