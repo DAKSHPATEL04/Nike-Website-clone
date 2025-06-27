@@ -12,11 +12,11 @@ import { useSearch } from "@/context/searchContex";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { navMenus } from "@/app/data/navMenus";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import WifiOffIcon from "@mui/icons-material/WifiOff";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
 
 // Styled Search Bar Components
 const Search = styled("div")(({ theme }) => ({
@@ -187,53 +187,6 @@ const DropdownMenu = ({
   );
 };
 
-// User Profile Hook
-const useUserProfile = (user: any) => {
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user?.uid) {
-        setUserProfile(null);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const db = getFirestore();
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-
-        if (userDoc.exists()) {
-          setUserProfile(userDoc.data());
-        } else {
-          // Fallback to user data from auth if no Firestore profile
-          setUserProfile({
-            firstName: user.displayName?.split(" ")[0] || "",
-            lastName: user.displayName?.split(" ")[1] || "",
-            fullName: user.displayName || "",
-            email: user.email,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-        // Fallback to basic user info
-        setUserProfile({
-          firstName:
-            user.displayName?.split(" ")[0] || user.email?.split("@")[0] || "",
-          email: user.email,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, [user]);
-
-  return { userProfile, loading };
-};
-
 // Main Navbar Component
 const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
@@ -246,10 +199,9 @@ const Navbar = () => {
   const profileTimeout = useRef<NodeJS.Timeout | null>(null);
   const navbarRef = useRef<HTMLDivElement>(null);
 
-  // Auth and Profile
+  // Auth and Profile using updated context
   const router = useRouter();
-  const { user } = useAuth();
-  const { userProfile, loading: profileLoading } = useUserProfile(user);
+  const { user, userProfile, profileLoading, isOnline } = useAuth();
 
   // Help dropdown items
   const helpItems = [
@@ -409,6 +361,14 @@ const Navbar = () => {
 
   return (
     <div className="sticky top-0 z-50" ref={navbarRef}>
+      {/* Offline Banner */}
+      {!isOnline && (
+        <div className="bg-red-600 text-white text-center py-1 text-sm flex items-center justify-center gap-2">
+          <WifiOffIcon fontSize="small" />
+          You're offline. Some features may not work properly.
+        </div>
+      )}
+
       {/* Top Bar */}
       <div className="flex justify-between items-center z-50 text-black bg-[#f5f5f5] relative px-10">
         <div className="flex items-center">
@@ -462,6 +422,12 @@ const Navbar = () => {
                     {getUserDisplayName()}
                   </span>
                   <PermIdentityOutlinedIcon className="ml-2 mb-[2px]" />
+                  {!isOnline && (
+                    <WifiOffIcon
+                      className="ml-1 text-red-500"
+                      fontSize="small"
+                    />
+                  )}
 
                   <div
                     onMouseEnter={handleProfileDropdownEnter}

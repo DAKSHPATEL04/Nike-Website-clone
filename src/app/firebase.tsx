@@ -2,6 +2,17 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  update,
+  onValue,
+  off,
+  goOffline,
+  goOnline,
+} from "firebase/database";
+import {
   getFirestore,
   doc,
   setDoc,
@@ -25,25 +36,111 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore with persistence settings
+// Initialize Realtime Database
+export const database = getDatabase(app);
+
+// Initialize Firestore (keeping for backward compatibility if needed)
 export const db = initializeFirestore(app, {
   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
 });
 
-// Enable persistence with error handling
+// Enable Firestore persistence with error handling
 enableIndexedDbPersistence(db).catch((err) => {
   if (err.code === "failed-precondition") {
-    // Multiple tabs open, persistence can only be enabled in one tab at a time
     console.warn("Firestore persistence failed - multiple tabs open");
   } else if (err.code === "unimplemented") {
-    // The current browser doesn't support all of the features required
     console.warn("Firestore persistence not available in this browser");
   }
 });
 
 export const auth = getAuth(app);
 
-// Helper functions with improved typing
+// Realtime Database Helper Functions
+export const getUserRealtimeRef = (userId: string) =>
+  ref(database, `users/${userId}`);
+
+export const getUserRealtimeData = async (userId: string) => {
+  try {
+    const userRef = getUserRealtimeRef(userId);
+    const snapshot = await get(userRef);
+
+    if (snapshot.exists()) {
+      return snapshot.val();
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting user data from Realtime Database:", error);
+    throw error;
+  }
+};
+
+export const setUserRealtimeData = async (userId: string, data: any) => {
+  try {
+    const userRef = getUserRealtimeRef(userId);
+    await set(userRef, {
+      ...data,
+      updatedAt: Date.now(),
+      createdAt: data.createdAt || Date.now(),
+    });
+  } catch (error) {
+    console.error("Error setting user data in Realtime Database:", error);
+    throw error;
+  }
+};
+
+export const updateUserRealtimeData = async (userId: string, updates: any) => {
+  try {
+    const userRef = getUserRealtimeRef(userId);
+    await update(userRef, {
+      ...updates,
+      updatedAt: Date.now(),
+    });
+  } catch (error) {
+    console.error("Error updating user data in Realtime Database:", error);
+    throw error;
+  }
+};
+
+// Real-time listener for user data
+export const listenToUserData = (
+  userId: string,
+  callback: (data: any) => void
+) => {
+  const userRef = getUserRealtimeRef(userId);
+
+  const unsubscribe = onValue(
+    userRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.val());
+      } else {
+        callback(null);
+      }
+    },
+    (error) => {
+      console.error("Error listening to user data:", error);
+      callback(null);
+    }
+  );
+
+  return unsubscribe;
+};
+
+export const stopListeningToUserData = (userId: string) => {
+  const userRef = getUserRealtimeRef(userId);
+  off(userRef);
+};
+
+// Network status helpers
+export const enableOfflineMode = () => {
+  goOffline(database);
+};
+
+export const enableOnlineMode = () => {
+  goOnline(database);
+};
+
+// Legacy Firestore functions (keeping for backward compatibility)
 export const getUserDocRef = (userId: string) => doc(db, "users", userId);
 
 export const getUserData = async (userId: string) => {
