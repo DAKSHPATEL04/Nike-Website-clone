@@ -8,7 +8,6 @@ const TheLetest = () => {
           <h1
             className="  text-black"
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}
@@ -18,9 +17,7 @@ const TheLetest = () => {
         </div>
         <div
           className="flex text-white   gap-4 justify-center items-center"
-          style={{
-            fontFamily: "poppins",
-          }}
+          style={{}}
         >
           <div className="relative flex w-[700px]  ">
             <img src="/img/the-letest-one.png" alt="" />

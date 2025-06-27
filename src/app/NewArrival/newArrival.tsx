@@ -8,7 +8,6 @@ const newArrival = () => {
           <h1
             className="  text-black"
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}
@@ -18,9 +17,7 @@ const newArrival = () => {
         </div>
         <div
           className="flex flex-col w-[1400px]  text-black gap-4 justify-center items-center"
-          style={{
-            fontFamily: "poppins",
-          }}
+          style={{}}
         >
           <div className=" text-center ">
             <img src="/img/new.png" alt="" />
@@ -29,7 +26,6 @@ const newArrival = () => {
                 className="pt-9
               "
                 style={{
-                  fontFamily: "poppins",
                   fontWeight: "500",
                 }}
               >

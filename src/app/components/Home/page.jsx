@@ -10,7 +10,6 @@ const HomePage = () => {
           <h1
             className=""
             style={{
-              fontFamily: "poppins",
               fontSize: "18px",
               fontWeight: "500",
             }}
@@ -20,7 +19,6 @@ const HomePage = () => {
           <p
             className="underline"
             style={{
-              fontFamily: "poppins",
               fontSize: "12px",
               fontWeight: "500",
             }}

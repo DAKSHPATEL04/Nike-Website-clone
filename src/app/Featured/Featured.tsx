@@ -8,7 +8,6 @@ const Featured = () => {
           <h1
             className="  text-black"
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}
@@ -18,16 +17,13 @@ const Featured = () => {
         </div>
         <div
           className="flex w-[1300px]  text-black gap-4 justify-center items-center"
-          style={{
-            fontFamily: "poppins",
-          }}
+          style={{}}
         >
           <div className="  ">
             <img src="/img/summer.png" alt="" />
             <div
               className="py-9 "
               style={{
-                fontFamily: "poppins",
                 fontSize: "20px",
                 fontWeight: "400",
               }}
@@ -40,7 +36,6 @@ const Featured = () => {
             <div
               className="py-9 "
               style={{
-                fontFamily: "poppins",
                 fontSize: "20px",
                 fontWeight: "400",
               }}
@@ -53,7 +48,6 @@ const Featured = () => {
             <div
               className="py-9 "
               style={{
-                fontFamily: "poppins",
                 fontSize: "20px",
                 fontWeight: "400",
               }}

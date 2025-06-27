@@ -132,7 +132,6 @@ const ShopNow = () => {
           <h2
             className="text-black "
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}

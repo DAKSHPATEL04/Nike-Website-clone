@@ -105,7 +105,6 @@ const Login = () => {
             <h1
               className="text-black pt-2 underline"
               style={{
-                fontFamily: "poppins",
                 fontSize: "30px",
                 fontWeight: "500",
               }}
@@ -145,16 +144,14 @@ const Login = () => {
           <div
             className="text-black w-full flex flex-col justify-center items-center py-4 mb-4"
             style={{
-              fontFamily: "poppins",
               fontSize: "20px",
               fontWeight: "500",
             }}
           >
-            <h2 className="text-center">Welcome back to Nike</h2>
+            <h2 className="text-center">Welcome back to 1 Nike</h2>
             <div
               className="flex justify-center mt-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "16px",
                 fontWeight: "400",
               }}
@@ -173,7 +170,7 @@ const Login = () => {
           <div className="py-2 w-full">
             <input
               className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type="email"
               placeholder="Email"
               value={email}
@@ -186,7 +183,7 @@ const Login = () => {
           <div className="relative py-2 w-full">
             <input
               className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
@@ -221,7 +218,6 @@ const Login = () => {
                 htmlFor="rememberMe"
                 className="text-gray-600 cursor-pointer"
                 style={{
-                  fontFamily: "poppins",
                   fontSize: "14px",
                   fontWeight: "400",
                 }}
@@ -234,7 +230,6 @@ const Login = () => {
               onClick={handleForgotPassword}
               className="text-gray-600 hover:underline hover:text-black"
               style={{
-                fontFamily: "poppins",
                 fontSize: "14px",
                 fontWeight: "400",
               }}
@@ -248,7 +243,6 @@ const Login = () => {
             <p
               className="text-gray-500 text-center"
               style={{
-                fontFamily: "poppins",
                 fontSize: "12px",
                 fontWeight: "400",
               }}
@@ -270,7 +264,6 @@ const Login = () => {
             <button
               className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
               style={{
-                fontFamily: "poppins",
                 fontSize: "16px",
                 fontWeight: "500",
               }}
@@ -286,7 +279,7 @@ const Login = () => {
             <div className="flex-grow border-t border-gray-300"></div>
             <span
               className="flex-shrink mx-4 text-gray-400"
-              style={{ fontFamily: "poppins", fontSize: "14px" }}
+              style={{ fontSize: "14px" }}
             >
               OR
             </span>
@@ -300,7 +293,6 @@ const Login = () => {
               onClick={handleGoogleSignIn}
               className="w-full py-3 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3"
               style={{
-                fontFamily: "poppins",
                 fontSize: "16px",
                 fontWeight: "500",
               }}

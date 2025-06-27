@@ -117,7 +117,7 @@ const SignUp = () => {
             <h1
               className="text-black pt-2 underline"
               style={{
-                fontFamily: "poppins",
+                fontFamily: "intern",
                 fontSize: "30px",
                 fontWeight: "500",
               }}
@@ -157,7 +157,6 @@ const SignUp = () => {
           <div
             className="text-black w-full flex flex-col justify-center items-center py-4 mb-4"
             style={{
-              fontFamily: "poppins",
               fontSize: "20px",
               fontWeight: "500",
             }}
@@ -166,7 +165,6 @@ const SignUp = () => {
             <div
               className="flex justify-center mt-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "16px",
                 fontWeight: "400",
               }}
@@ -186,7 +184,7 @@ const SignUp = () => {
           <div className="py-2 relative">
             <input
               className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type="text"
               placeholder="First Name"
               onChange={(e) => setFirstName(e.target.value)}
@@ -199,7 +197,7 @@ const SignUp = () => {
           <div className="py-2 relative">
             <input
               className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type="text"
               placeholder="Last Name"
               onChange={(e) => setLastName(e.target.value)}
@@ -212,7 +210,7 @@ const SignUp = () => {
           <div className="py-2 relative">
             <input
               className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type="email"
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
@@ -225,7 +223,7 @@ const SignUp = () => {
           <div className="py-2 relative">
             <input
               className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password (min 6 characters)"
               value={password}
@@ -249,7 +247,7 @@ const SignUp = () => {
           <div className="py-2 relative">
             <input
               className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ fontFamily: "poppins", color: "black" }}
+              style={{ color: "black" }}
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
               value={confirmPassword}
@@ -274,7 +272,6 @@ const SignUp = () => {
             <p
               className="text-gray-500 text-center"
               style={{
-                fontFamily: "poppins",
                 fontSize: "14px",
                 fontWeight: "400",
               }}
@@ -295,7 +292,6 @@ const SignUp = () => {
             <button
               className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
               style={{
-                fontFamily: "poppins",
                 fontSize: "16px",
                 fontWeight: "500",
               }}

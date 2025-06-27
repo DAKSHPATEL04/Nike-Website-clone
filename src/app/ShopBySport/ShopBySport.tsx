@@ -99,7 +99,6 @@ const ShopBySport = () => {
           <h2
             className="text-black"
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}
@@ -158,7 +157,6 @@ const ShopBySport = () => {
                   <div
                     className="absolute bottom-14 left-12 bg-white py-[5px] px-4 text-black rounded-3xl"
                     style={{
-                      fontFamily: "poppins",
                       fontSize: "16px",
                       fontWeight: "500",
                     }}

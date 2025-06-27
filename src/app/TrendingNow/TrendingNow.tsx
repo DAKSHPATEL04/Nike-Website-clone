@@ -99,7 +99,6 @@ const TrendingNowComponent = () => {
           <h2
             className="text-black"
             style={{
-              fontFamily: "poppins",
               fontSize: "25px",
               fontWeight: "500",
             }}
@@ -158,7 +157,6 @@ const TrendingNowComponent = () => {
                   <div
                     className="text-black"
                     style={{
-                      fontFamily: "poppins",
                       fontSize: "15px",
                       fontWeight: "500",
                     }}
@@ -168,7 +166,6 @@ const TrendingNowComponent = () => {
                   <div
                     className="text-gray-600"
                     style={{
-                      fontFamily: "poppins",
                       fontSize: "15px",
                       fontWeight: "500",
                     }}
@@ -178,7 +175,6 @@ const TrendingNowComponent = () => {
                   <div
                     className="text-black"
                     style={{
-                      fontFamily: "poppins",
                       fontSize: "16px",
                       fontWeight: "500",
                     }}

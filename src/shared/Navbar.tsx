@@ -95,7 +95,6 @@ const MegaMenu = ({ sections, isActive }: MegaMenuProps) => {
       ref={menuRef}
       className="absolute left-0 w-full bg-white shadow-lg border border-gray-200 z-30 px-10 py-6 grid grid-cols-2 md:grid-cols-4 gap-10"
       style={{
-        fontFamily: "Poppins",
         opacity: 0,
         visibility: "hidden",
         transform: "translateY(-20px)",
@@ -166,7 +165,6 @@ const DropdownMenu = ({
         position === "right" ? "right-0" : "left-0"
       } mt-2 bg-white shadow-lg border border-gray-200 z-50 py-2 min-w-[200px] rounded-md`}
       style={{
-        fontFamily: "Poppins",
         opacity: 0,
         visibility: "hidden",
         transform: "translateY(-10px)",
@@ -486,10 +484,7 @@ const Navbar = () => {
 
         {/* Navigation Links with Mega Menu */}
         <div className="flex gap-4">
-          <ul
-            className="flex gap-6"
-            style={{ fontFamily: "Poppins", textUnderlineOffset: "5px" }}
-          >
+          <ul className="flex gap-6" style={{ textUnderlineOffset: "5px" }}>
             {navMenus.map((menu, idx) => (
               <li
                 key={idx}

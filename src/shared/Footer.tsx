@@ -18,7 +18,6 @@ const Footer = () => {
             <h1
               className=" py-4 "
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -28,7 +27,6 @@ const Footer = () => {
             <ul
               className="text-gray-500 gap-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -44,7 +42,6 @@ const Footer = () => {
             <h1
               className=" py-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -54,7 +51,6 @@ const Footer = () => {
             <ul
               className="text-gray-500 gap-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -71,7 +67,6 @@ const Footer = () => {
             <h1
               className=" py-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -81,7 +76,6 @@ const Footer = () => {
             <ul
               className="text-gray-500 gap-4"
               style={{
-                fontFamily: "poppins",
                 fontSize: "15px",
                 fontWeight: "500",
               }}
@@ -99,7 +93,6 @@ const Footer = () => {
         <div
           className="text-gray-500 gap-4 mb-38"
           style={{
-            fontFamily: "poppins",
             fontSize: "15px",
             fontWeight: "500",
           }}
@@ -113,7 +106,6 @@ const Footer = () => {
           <ul
             className="flex flex-row justify-center items-center gap-4 text-gray-500"
             style={{
-              fontFamily: "poppins",
               fontSize: "15px",
               fontWeight: "500",
             }}
