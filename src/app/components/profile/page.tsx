@@ -263,7 +263,7 @@ const Profile = () => {
                 onClick={() => setSelectedMenu(item.id)}
                 className={`flex items-center w-full p-3 rounded-lg transition-all duration-200 ${
                   selectedMenu === item.id
-                    ? "bg-blue-50 text-blue-700 border-l-4 border-blue-700"
+                    ? "bg-blue-50 text-black border-l-4 border-black"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
@@ -550,7 +550,7 @@ const Profile = () => {
                   <Button
                     variant="outlined"
                     onClick={() => setSelectedMenu("account")}
-                    className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                    className="text-black border-black hover:bg-blue-50"
                   >
                     Return to Account Details
                   </Button>
