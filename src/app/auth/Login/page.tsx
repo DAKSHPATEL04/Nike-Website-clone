@@ -148,7 +148,7 @@ const Login = () => {
               fontWeight: "500",
             }}
           >
-            <h2 className="text-center">Welcome back to 1 Nike</h2>
+            <h2 className="text-center">Welcome back to Nike</h2>
             <div
               className="flex justify-center mt-4"
               style={{
