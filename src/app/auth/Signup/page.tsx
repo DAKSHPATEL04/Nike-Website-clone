@@ -110,65 +110,50 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8">
-      <div className="flex flex-col justify-start items-start max-w-md w-full px-4">
+    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-start items-start w-full max-w-md">
         <div className="flex justify-between items-start w-full mb-6">
           <div>
-            <h1
-              className="text-black pt-2 underline"
-              style={{
-                fontFamily: "intern",
-                fontSize: "30px",
-                fontWeight: "500",
-              }}
-            >
+            <h1 className="text-black pt-2 underline text-2xl sm:text-3xl font-medium">
               Sign Up
             </h1>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-3 sm:gap-4 items-center">
             <div>
               <Image
                 src="/img/logo.png"
                 alt="Nike Logo"
-                className="w-12 h-auto"
+                className="w-10 sm:w-12 h-auto"
                 width={100}
                 height={100}
+                priority
               />
             </div>
             <div>
               <Image
                 src="/img/air-jordan-logo.png"
                 alt="Air Jordan Logo"
-                className="w-8 h-auto"
+                className="w-7 sm:w-8 h-auto"
                 width={100}
                 height={100}
+                priority
               />
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full">
+          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full text-sm sm:text-base">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="w-full">
-          <div
-            className="text-black w-full flex flex-col justify-center items-center py-4 mb-4"
-            style={{
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
-          >
-            <h2 className="text-center">Join us and start your journey</h2>
-            <div
-              className="flex justify-center mt-4"
-              style={{
-                fontSize: "16px",
-                fontWeight: "400",
-              }}
-            >
+          <div className="text-black w-full flex flex-col justify-center items-center py-4 mb-4">
+            <h2 className="text-center text-lg sm:text-xl font-medium">
+              Join us and start your journey
+            </h2>
+            <div className="flex justify-center mt-4 text-sm sm:text-base font-normal">
               <button
                 type="button"
                 onClick={() => router.push("/auth/Login")}
@@ -183,7 +168,7 @@ const SignUp = () => {
           {/* First Name */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type="text"
               placeholder="First Name"
@@ -196,7 +181,7 @@ const SignUp = () => {
           {/* Last Name */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type="text"
               placeholder="Last Name"
@@ -209,7 +194,7 @@ const SignUp = () => {
           {/* Email */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type="email"
               placeholder="Email"
@@ -222,7 +207,7 @@ const SignUp = () => {
           {/* Password */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password (min 6 characters)"
@@ -246,7 +231,7 @@ const SignUp = () => {
           {/* Confirm Password */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
@@ -268,14 +253,8 @@ const SignUp = () => {
           </div>
 
           {/* Terms and Conditions */}
-          <div className="py-6">
-            <p
-              className="text-gray-500 text-center"
-              style={{
-                fontSize: "14px",
-                fontWeight: "400",
-              }}
-            >
+          <div className="py-4 sm:py-6">
+            <p className="text-gray-500 text-center text-xs sm:text-sm">
               By creating an account, I agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Privacy Policy
@@ -290,11 +269,7 @@ const SignUp = () => {
           {/* Submit Button */}
           <div className="w-full">
             <button
-              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
+              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base font-medium"
               type="submit"
               disabled={loading}
             >
