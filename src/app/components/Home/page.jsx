@@ -5,63 +5,53 @@ import Image from "next/image";
 const HomePage = () => {
   return (
     <>
-      <div className="flex flex-col py-3 justify-center items-center z-50 text-black  bg-[#f5f5f5]  ">
-        <div className="flex flex-col justify-center items-center">
-          <h1
-            className=""
-            style={{
-              fontSize: "18px",
-              fontWeight: "500",
-            }}
-          >
+      {/* Sale Banner - Responsive */}
+      <div className="flex flex-col py-3 justify-center items-center z-50 text-black bg-[#f5f5f5] px-4">
+        <div className="flex flex-col justify-center items-center text-center">
+          <h1 className="text-base md:text-lg font-medium">
             New Styles On Sale: Up To 40% Off
           </h1>
-          <p
-            className="underline"
-            style={{
-              fontSize: "12px",
-              fontWeight: "500",
-            }}
-          >
+          <p className="underline text-xs md:text-sm font-medium">
             <span>Shop All Our New Markdowns</span>
           </p>
         </div>
       </div>
-      <div className="flex bg-white justify-center items-center w-full h-screen">
-        <div className="flex flex-col  justify-center items-center w-[80%] ">
-          <Image
-            src="/img/nike-just-do-it.png"
-            alt="home image"
-            width={2000}
-            height={1000}
-          />
-          <div className="text-black flex flex-col justify-center items-center">
-            <h3 className="font-bold mt-4 ">Breaking4</h3>
-            <h1
-              className="text-6xl font-bold w-[800px] flex justify-center items-center "
-              style={{
-                fontFamily: "Roboto",
-                fontWeight: "bold",
-                fontSize: "70px",
-              }}
-            >
+
+      {/* Hero Section - Responsive */}
+      <div className="flex bg-white justify-center items-center w-full min-h-screen py-8 md:py-0">
+        <div className="flex flex-col justify-center items-center w-full px-4 md:w-[80%]">
+          {/* Responsive Image */}
+          <div className="w-full max-w-[2000px]">
+            <Image
+              src="/img/nike-just-do-it.png"
+              alt="home image"
+              width={2000}
+              height={1000}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+
+          {/* Content Section */}
+          <div className="text-black flex flex-col justify-center items-center text-center mt-4 md:mt-8">
+            <h3 className="font-bold text-lg md:text-xl">Breaking4</h3>
+
+            {/* Responsive Headlines */}
+            <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] w-full max-w-[300px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px]">
               FAITH KIPYEGON
             </h1>
-            <h1
-              className="text-6xl  w-[800px] flex justify-center items-center "
-              style={{
-                fontFamily: "Roboto",
-                fontWeight: "bold",
-                fontSize: "70px",
-              }}
-            >
+            <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] w-full max-w-[300px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px]">
               COLLECTION
             </h1>
-            <p className="w-[500px] text-center ">
-              inspired by the woman daring to break the 4-minute mile barrier,
-              her collection features running shoes and apparel buil for speed.
+
+            {/* Responsive Paragraph */}
+            <p className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] text-sm md:text-base mt-2 md:mt-4">
+              Inspired by the woman daring to break the 4-minute mile barrier,
+              her collection features running shoes and apparel built for speed.
             </p>
-            <button className="bg-black text-white px-4 py-2 mt-4 rounded-3xl">
+
+            {/* Shop Button */}
+            <button className="bg-black text-white px-6 py-2 mt-4 md:mt-6 rounded-3xl text-sm md:text-base hover:bg-gray-800 transition-colors">
               Shop
             </button>
           </div>
