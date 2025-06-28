@@ -9,9 +9,16 @@ import { auth } from "../../firebase";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,57 +38,68 @@ const Login = () => {
     setError("");
 
     // Basic validation
-    if (!email.trim()) {
+    if (!formData.email.trim()) {
       setError("Please enter your email address");
       setLoading(false);
       return;
     }
 
-    if (!password.trim()) {
+    if (!formData.password.trim()) {
       setError("Please enter your password");
       setLoading(false);
       return;
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
-      console.log("Successfully signed in!");
+      await signInWithEmailAndPassword(
+        auth,
+        formData.email.trim(),
+        formData.password
+      );
       router.push("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Authentication failed:", error);
+      let errorMessage =
+        "Login failed. Please check your credentials and try again.";
 
-      // Handle specific Firebase errors
-      switch (error.code) {
-        case "auth/user-not-found":
-          setError(
-            "No account found with this email address. Please check your email or sign up."
-          );
-          break;
-        case "auth/wrong-password":
-          setError("Incorrect password. Please try again.");
-          break;
-        case "auth/invalid-email":
-          setError("Please enter a valid email address.");
-          break;
-        case "auth/too-many-requests":
-          setError("Too many failed attempts. Please try again later.");
-          break;
-        case "auth/user-disabled":
-          setError("This account has been disabled. Please contact support.");
-          break;
-        case "auth/invalid-credential":
-          setError(
-            "Invalid email or password. Please check your credentials and try again."
-          );
-          break;
-        default:
-          setError(
-            "Login failed. Please check your credentials and try again."
-          );
+      if (error instanceof Error && "code" in error) {
+        switch (error.code) {
+          case "auth/user-not-found":
+            errorMessage =
+              "No account found with this email address. Please check your email or sign up.";
+            break;
+          case "auth/wrong-password":
+            errorMessage = "Incorrect password. Please try again.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "Please enter a valid email address.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage = "Too many failed attempts. Please try again later.";
+            break;
+          case "auth/user-disabled":
+            errorMessage =
+              "This account has been disabled. Please contact support.";
+            break;
+          case "auth/invalid-credential":
+            errorMessage =
+              "Invalid email or password. Please check your credentials and try again.";
+            break;
+        }
       }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const togglePasswordVisibility = () => {
@@ -93,7 +111,6 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    // You can implement Google Sign-In here if needed
     console.log("Google Sign-In not implemented yet");
   };
 
@@ -102,35 +119,27 @@ const Login = () => {
       <div className="flex flex-col justify-start items-start max-w-md w-full px-4 sm:px-0 sm:max-w-lg lg:max-w-xl">
         <div className="flex justify-between items-start w-full mb-6 flex-col sm:flex-row gap-4 sm:gap-0">
           <div>
-            <h1
-              className="text-black pt-2 underline text-center sm:text-left"
-              style={{
-                fontSize: "30px",
-                fontWeight: "500",
-              }}
-            >
+            <h1 className="text-black pt-2 underline text-center sm:text-left text-3xl font-medium">
               Sign In
             </h1>
           </div>
           <div className="flex gap-4 items-center justify-center sm:justify-end w-full sm:w-auto">
-            <div>
-              <Image
-                src="/img/logo.png"
-                alt="Nike Logo"
-                className="w-12 h-auto sm:w-14 lg:w-16"
-                width={100}
-                height={100}
-              />
-            </div>
-            <div>
-              <Image
-                src="/img/air-jordan-logo.png"
-                alt="Air Jordan Logo"
-                className="w-8 h-auto sm:w-10 lg:w-12"
-                width={100}
-                height={100}
-              />
-            </div>
+            <Image
+              src="/img/logo.png"
+              alt="Nike Logo"
+              className="w-12 h-auto sm:w-14 lg:w-16"
+              width={100}
+              height={100}
+              priority
+            />
+            <Image
+              src="/img/air-jordan-logo.png"
+              alt="Air Jordan Logo"
+              className="w-8 h-auto sm:w-10 lg:w-12"
+              width={100}
+              height={100}
+              priority
+            />
           </div>
         </div>
 
@@ -141,23 +150,11 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="w-full">
-          <div
-            className="text-black w-full flex flex-col justify-center items-center py-4 mb-4"
-            style={{
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
-          >
+          <div className="text-black w-full flex flex-col justify-center items-center py-4 mb-4 text-xl font-medium">
             <h2 className="text-center text-lg sm:text-xl lg:text-2xl">
               Welcome back to Nike
             </h2>
-            <div
-              className="flex justify-center mt-4"
-              style={{
-                fontSize: "16px",
-                fontWeight: "400",
-              }}
-            >
+            <div className="flex justify-center mt-4 text-base font-normal">
               <button
                 type="button"
                 onClick={() => router.push("/auth/Signup")}
@@ -174,9 +171,10 @@ const Login = () => {
               className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type="email"
+              name="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -187,9 +185,10 @@ const Login = () => {
               className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
+              name="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
               required
             />
             <button
@@ -218,11 +217,7 @@ const Login = () => {
               />
               <label
                 htmlFor="rememberMe"
-                className="text-gray-600 cursor-pointer text-sm sm:text-base"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "400",
-                }}
+                className="text-gray-600 cursor-pointer text-sm sm:text-base text-[14px] font-normal"
               >
                 Keep me signed in
               </label>
@@ -230,11 +225,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-gray-600 hover:underline hover:text-black text-sm sm:text-base order-1 sm:order-2"
-              style={{
-                fontSize: "14px",
-                fontWeight: "400",
-              }}
+              className="text-gray-600 hover:underline hover:text-black text-sm sm:text-base order-1 sm:order-2 text-[14px] font-normal"
             >
               Forgotten your password?
             </button>
@@ -242,13 +233,7 @@ const Login = () => {
 
           {/* Terms */}
           <div className="py-4 w-full">
-            <p
-              className="text-gray-500 text-center text-xs sm:text-sm"
-              style={{
-                fontSize: "12px",
-                fontWeight: "400",
-              }}
-            >
+            <p className="text-gray-500 text-center text-xs sm:text-sm text-[12px] font-normal">
               By logging in, you agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Terms of Use
@@ -264,11 +249,7 @@ const Login = () => {
           {/* Sign In Button */}
           <div className="w-full mb-4">
             <button
-              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base lg:text-lg"
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
+              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base lg:text-lg text-[16px] font-medium"
               type="submit"
               disabled={loading}
             >
@@ -279,10 +260,7 @@ const Login = () => {
           {/* Divider */}
           <div className="flex items-center w-full py-4">
             <div className="flex-grow border-t border-gray-300"></div>
-            <span
-              className="flex-shrink mx-4 text-gray-400 text-xs sm:text-sm"
-              style={{ fontSize: "14px" }}
-            >
+            <span className="flex-shrink mx-4 text-gray-400 text-xs sm:text-sm text-[14px]">
               OR
             </span>
             <div className="flex-grow border-t border-gray-300"></div>
@@ -293,11 +271,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="w-full py-3 sm:py-4 lg:py-5 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-sm sm:text-base lg:text-lg"
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
+              className="w-full py-3 sm:py-4 lg:py-5 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-sm sm:text-base lg:text-lg text-[16px] font-medium"
             >
               <svg
                 width="20"
