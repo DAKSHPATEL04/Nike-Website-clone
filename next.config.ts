@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    domains: ["static.nike.com"],
-  },
   /* config options here */
 };
 
@@ -15,6 +12,4 @@ module.exports = {
     ignoreBuildErrors: true,
   },
 };
-
-module.exports = nextConfig;
 export default nextConfig;

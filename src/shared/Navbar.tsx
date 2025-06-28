@@ -17,8 +17,6 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 
 // Styled Search Bar Components
 const Search = styled("div")(({ theme }) => ({
@@ -107,7 +105,7 @@ const MegaMenu = ({ sections, isActive }: MegaMenuProps) => {
   return (
     <div
       ref={menuRef}
-      className="absolute left-0 w-full bg-white shadow-lg border border-gray-200 z-30 px-4 md:px-10 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-10"
+      className="absolute left-0 w-full bg-white shadow-lg border border-gray-200 z-30 px-10 py-6 grid grid-cols-2 md:grid-cols-4 gap-10"
       style={{
         opacity: 0,
         visibility: "hidden",
@@ -199,35 +197,6 @@ const DropdownMenu = ({
   );
 };
 
-// Mobile Dropdown Menu Component
-const MobileDropdownMenu = ({
-  items,
-  isActive,
-}: {
-  items: { label: string; action?: () => void }[];
-  isActive: boolean;
-}) => {
-  return (
-    <div
-      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        isActive ? "max-h-[1000px]" : "max-h-0"
-      }`}
-    >
-      <ul className="space-y-0">
-        {items.map((item, index) => (
-          <li
-            key={index}
-            className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-black cursor-pointer transition-colors duration-150 border-t border-gray-100"
-            onClick={item.action}
-          >
-            {item.label}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
 // Search Suggestions Component
 const SearchSuggestions = ({
   isActive,
@@ -299,7 +268,7 @@ const SearchSuggestions = ({
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 mt-2 w-full sm:w-[400px] md:w-[500px] bg-white shadow-lg border border-gray-200 z-50 rounded-lg overflow-hidden"
+      className="absolute right-0 mt-2 w-[500px] bg-white shadow-lg border border-gray-200 z-50 rounded-lg overflow-hidden"
       style={{
         opacity: 0,
         visibility: "hidden",
@@ -340,7 +309,7 @@ const SearchSuggestions = ({
                   onClose();
                 }}
               >
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                   <img
                     src={product.images?.[0] || "/img/placeholder-product.jpg"}
                     alt={product.name || "Product"}
@@ -409,8 +378,6 @@ const Navbar = () => {
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const menuTimeout = useRef<NodeJS.Timeout | null>(null);
   const helpTimeout = useRef<NodeJS.Timeout | null>(null);
   const profileTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -643,20 +610,10 @@ const Navbar = () => {
     return "User";
   };
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-    if (mobileSearchOpen) setMobileSearchOpen(false);
-  };
-
-  const toggleMobileSearch = () => {
-    setMobileSearchOpen(!mobileSearchOpen);
-    if (mobileMenuOpen) setMobileMenuOpen(false);
-  };
-
   if (!isClient) return null;
 
   return (
-    <div className="sticky top-0 text-black  z-50" ref={navbarRef}>
+    <div className="sticky top-0 z-50" ref={navbarRef}>
       {/* Offline Banner */}
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-1 text-sm flex items-center justify-center gap-2">
@@ -666,7 +623,7 @@ const Navbar = () => {
       )}
 
       {/* Top Bar */}
-      <div className="flex justify-between items-center z-50 text-black bg-[#f5f5f5] relative px-4 sm:px-6 md:px-10">
+      <div className="flex justify-between items-center z-50 text-black bg-[#f5f5f5] relative px-10">
         <div className="flex items-center">
           <img
             className="w-[18px]"
@@ -674,7 +631,7 @@ const Navbar = () => {
             alt="Jordan Logo"
           />
         </div>
-        <div className="hidden sm:block">
+        <div>
           <ul
             className="flex flex-row items-center gap-4"
             style={{
@@ -771,32 +728,17 @@ const Navbar = () => {
         }}
         role="navigation"
       >
-        {/* Mobile menu button */}
-        <div className="flex items-center sm:hidden">
-          <button
-            onClick={toggleMobileMenu}
-            className="p-2 mr-2"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <CloseIcon className="text-2xl" />
-            ) : (
-              <MenuIcon className="text-2xl" />
-            )}
-          </button>
-        </div>
-
         {/* Brand logo */}
-        <Link href="/" className="flex-shrink-0">
+        <Link href="/">
           <img
             src="/img/logo.png"
             alt="Nike Logo"
-            className="cursor-pointer w-[60px] sm:w-[70px] ml-2 hover:opacity-80 transition-opacity"
+            className="cursor-pointer w-[70px] ml-2 hover:opacity-80 transition-opacity"
           />
         </Link>
 
-        {/* Navigation Links with Mega Menu - Desktop */}
-        <div className="hidden sm:flex gap-4">
+        {/* Navigation Links with Mega Menu */}
+        <div className="flex gap-4">
           <ul className="flex gap-6" style={{ textUnderlineOffset: "5px" }}>
             {navMenus.map((menu, idx) => (
               <li
@@ -814,24 +756,9 @@ const Navbar = () => {
         </div>
 
         {/* Search & Icons */}
-        <ul className="flex gap-2 sm:gap-4 items-center">
-          {/* Mobile search button */}
-          <li className="sm:hidden">
-            <button
-              onClick={toggleMobileSearch}
-              className="p-2"
-              aria-label="Toggle search"
-            >
-              {mobileSearchOpen ? (
-                <CloseIcon className="text-2xl" />
-              ) : (
-                <SearchIcon className="text-2xl" />
-              )}
-            </button>
-          </li>
-
-          {/* Search Box with Suggestions - Desktop */}
-          <li className="hidden sm:block relative">
+        <ul className="flex gap-4 items-center">
+          {/* Search Box with Suggestions */}
+          <li className="relative">
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -861,7 +788,7 @@ const Navbar = () => {
 
           {/* Add Product - Only show if user is logged in */}
           {user && (
-            <li className="hidden sm:block cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
+            <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
               <Link href="/components/RegistrationForm">
                 <AddIcon className="text-3xl m-2 border-2 rounded-2xl" />
               </Link>
@@ -871,168 +798,22 @@ const Navbar = () => {
           {/* Wishlist */}
           <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
             <Link href="/wishlist">
-              <FavoriteBorderOutlinedIcon className="text-2xl sm:text-3xl m-2" />
+              <FavoriteBorderOutlinedIcon className="text-3xl m-2" />
             </Link>
           </li>
 
           {/* Cart */}
           <li className="cursor-pointer hover:bg-[#e5e5e5] hover:rounded-full transition-colors">
             <Link href="/cart">
-              <ShoppingBagOutlinedIcon className="text-2xl sm:text-3xl m-2" />
+              <ShoppingBagOutlinedIcon className="text-3xl m-2" />
             </Link>
           </li>
         </ul>
       </nav>
 
-      {/* Mobile Search - Only visible when toggled */}
-      {mobileSearchOpen && (
-        <div className="sm:hidden bg-white p-4 border-t border-gray-200">
-          <div className="relative w-full">
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={handleSearchFocus}
-                onBlur={closeSearchSuggestions}
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-            {showSearchSuggestions && (
-              <SearchSuggestions
-                isActive={showSearchSuggestions}
-                searchQuery={searchQuery}
-                onClose={() => setShowSearchSuggestions(false)}
-                products={products}
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Menu - Only visible when toggled */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden bg-white border-t border-gray-200">
-          {/* Navigation Links */}
-          <ul className="py-2">
-            {navMenus.map((menu, idx) => (
-              <li key={idx} className="border-b border-gray-100">
-                <div
-                  className="px-4 py-3 font-medium flex justify-between items-center"
-                  onClick={() => setActiveMenu(activeMenu === idx ? null : idx)}
-                >
-                  <span>{menu.title}</span>
-                  <AddIcon
-                    className={`transform transition-transform ${
-                      activeMenu === idx ? "rotate-45" : "rotate-0"
-                    }`}
-                  />
-                </div>
-                {activeMenu === idx && (
-                  <div className="px-4 py-2 bg-gray-50">
-                    {menu.sections.map((section, sectionIdx) => (
-                      <div key={sectionIdx} className="mb-4">
-                        <h3 className="font-semibold text-gray-900 text-sm mb-2">
-                          {section.heading}
-                        </h3>
-                        <ul className="space-y-1">
-                          {section.items.map((item, itemIdx) => (
-                            <li
-                              key={itemIdx}
-                              className="text-sm text-gray-600 hover:text-black cursor-pointer transition-colors duration-150"
-                            >
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          {/* Mobile Help Section */}
-          <div className="border-t border-gray-200 px-4 py-3">
-            <div
-              className="font-medium flex justify-between items-center"
-              onClick={() => setActiveHelpDropdown(!activeHelpDropdown)}
-            >
-              <span>Help</span>
-              <AddIcon
-                className={`transform transition-transform ${
-                  activeHelpDropdown ? "rotate-45" : "rotate-0"
-                }`}
-              />
-            </div>
-            <MobileDropdownMenu
-              items={helpItems}
-              isActive={activeHelpDropdown}
-            />
-          </div>
-
-          {/* Mobile Profile Section */}
-          <div className="border-t border-gray-200 px-4 py-3">
-            {user ? (
-              <>
-                <div
-                  className="font-medium flex justify-between items-center"
-                  onClick={() =>
-                    setActiveProfileDropdown(!activeProfileDropdown)
-                  }
-                >
-                  <span>Hi, {getUserDisplayName()}</span>
-                  <AddIcon
-                    className={`transform transition-transform ${
-                      activeProfileDropdown ? "rotate-45" : "rotate-0"
-                    }`}
-                  />
-                </div>
-                <MobileDropdownMenu
-                  items={profileItems}
-                  isActive={activeProfileDropdown}
-                />
-              </>
-            ) : (
-              <div className="flex justify-between">
-                <Link
-                  href="/auth/Login"
-                  className="text-sm font-medium hover:text-gray-600"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/auth/Signup"
-                  className="text-sm font-medium hover:text-gray-600"
-                >
-                  Join Us
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Add Product Button for Mobile */}
-          {user && (
-            <div className="border-t border-gray-200 px-4 py-3">
-              <Link
-                href="/components/RegistrationForm"
-                className="flex items-center gap-2 text-sm font-medium"
-              >
-                <AddIcon className="text-lg" />
-                <span>Add Product</span>
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Mega Menu Container - Desktop */}
+      {/* Mega Menu Container */}
       <div
-        className="relative w-full hidden sm:block"
+        className="relative w-full"
         onMouseEnter={handleMegaMenuEnter}
         onMouseLeave={handleMegaMenuLeave}
       >
