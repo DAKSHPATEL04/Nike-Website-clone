@@ -21,6 +21,9 @@ const TheLatest = () => {
               alt="Faith Kipyegon vs. The 4-Minute Mile"
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 700px"
+              quality={85}
+              priority={false}
             />
             <div className="absolute bottom-4 left-4 md:left-8 md:bottom-8 flex flex-col justify-start items-start p-4 md:p-0">
               <h3 className="font-medium mb-1 md:mb-2">Breaking4</h3>
@@ -42,6 +45,9 @@ const TheLatest = () => {
               alt="Nike X NorBlack NorWhite"
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 700px"
+              quality={85}
+              priority={false}
             />
             <div className="absolute bottom-4 left-4 md:left-8 md:bottom-8 flex flex-col justify-start items-start p-4 md:p-0">
               <h2 className="w-full max-w-[390px] text-sm md:text-base lg:text-xl font-normal">
