@@ -98,64 +98,50 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8">
-      <div className="flex flex-col justify-start items-start max-w-md w-full px-4">
+    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-start items-start w-full max-w-md">
         <div className="flex justify-between items-start w-full mb-6">
           <div>
-            <h1
-              className="text-black pt-2 underline"
-              style={{
-                fontSize: "30px",
-                fontWeight: "500",
-              }}
-            >
+            <h1 className="text-black pt-2 underline text-2xl sm:text-3xl font-medium">
               Sign In
             </h1>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-3 sm:gap-4 items-center">
             <div>
               <Image
                 src="/img/logo.png"
                 alt="Nike Logo"
-                className="w-12 h-auto"
+                className="w-10 sm:w-12 h-auto"
                 width={100}
                 height={100}
+                priority
               />
             </div>
             <div>
               <Image
                 src="/img/air-jordan-logo.png"
                 alt="Air Jordan Logo"
-                className="w-8 h-auto"
+                className="w-7 sm:w-8 h-auto"
                 width={100}
                 height={100}
+                priority
               />
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full">
+          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full text-sm sm:text-base">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="w-full">
-          <div
-            className="text-black w-full flex flex-col justify-center items-center py-4 mb-4"
-            style={{
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
-          >
-            <h2 className="text-center">Welcome back to Nike</h2>
-            <div
-              className="flex justify-center mt-4"
-              style={{
-                fontSize: "16px",
-                fontWeight: "400",
-              }}
-            >
+          <div className="text-black w-full flex flex-col justify-center items-center py-4 mb-4">
+            <h2 className="text-center text-lg sm:text-xl font-medium">
+              Welcome back to Nike
+            </h2>
+            <div className="flex justify-center mt-4 text-sm sm:text-base font-normal">
               <button
                 type="button"
                 onClick={() => router.push("/auth/Signup")}
@@ -169,7 +155,7 @@ const Login = () => {
           {/* Email */}
           <div className="py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type="email"
               placeholder="Email"
@@ -182,7 +168,7 @@ const Login = () => {
           {/* Password */}
           <div className="relative py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-12 sm:h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -205,7 +191,7 @@ const Login = () => {
           </div>
 
           {/* Remember Me & Forgot Password */}
-          <div className="flex justify-between items-center py-4 w-full">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 w-full gap-2 sm:gap-0">
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -216,11 +202,7 @@ const Login = () => {
               />
               <label
                 htmlFor="rememberMe"
-                className="text-gray-600 cursor-pointer"
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "400",
-                }}
+                className="text-gray-600 cursor-pointer text-xs sm:text-sm"
               >
                 Keep me signed in
               </label>
@@ -228,11 +210,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-gray-600 hover:underline hover:text-black"
-              style={{
-                fontSize: "14px",
-                fontWeight: "400",
-              }}
+              className="text-gray-600 hover:underline hover:text-black text-xs sm:text-sm"
             >
               Forgotten your password?
             </button>
@@ -240,13 +218,7 @@ const Login = () => {
 
           {/* Terms */}
           <div className="py-4 w-full">
-            <p
-              className="text-gray-500 text-center"
-              style={{
-                fontSize: "12px",
-                fontWeight: "400",
-              }}
-            >
+            <p className="text-gray-500 text-center text-xs">
               By logging in, you agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Terms of Use
@@ -262,11 +234,7 @@ const Login = () => {
           {/* Sign In Button */}
           <div className="w-full mb-4">
             <button
-              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
+              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base font-medium"
               type="submit"
               disabled={loading}
             >
@@ -277,10 +245,7 @@ const Login = () => {
           {/* Divider */}
           <div className="flex items-center w-full py-4">
             <div className="flex-grow border-t border-gray-300"></div>
-            <span
-              className="flex-shrink mx-4 text-gray-400"
-              style={{ fontSize: "14px" }}
-            >
+            <span className="flex-shrink mx-4 text-gray-400 text-xs sm:text-sm">
               OR
             </span>
             <div className="flex-grow border-t border-gray-300"></div>
@@ -291,11 +256,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="w-full py-3 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3"
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
+              className="w-full py-3 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-sm sm:text-base font-medium"
             >
               <svg width="20" height="20" viewBox="0 0 24 24">
                 <path
