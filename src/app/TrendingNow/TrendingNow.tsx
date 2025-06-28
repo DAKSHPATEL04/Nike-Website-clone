@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { TrendingNow } from "../data/TrendingNow";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -19,13 +20,9 @@ interface Product {
 }
 
 const TrendingNowComponent = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-
-  // Since we're using local data, we don't need the fetch effect
   const products = TrendingNow;
 
   const scrollLeft = () => {
@@ -46,7 +43,6 @@ const TrendingNowComponent = () => {
     }
   };
 
-  // Touch event handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
   };
@@ -56,78 +52,45 @@ const TrendingNowComponent = () => {
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 50) {
-      scrollRight(); // Swipe left
-    }
-
-    if (touchStart - touchEnd < -50) {
-      scrollLeft(); // Swipe right
-    }
+    if (touchStart - touchEnd > 50) scrollRight(); // Swipe left
+    if (touchStart - touchEnd < -50) scrollLeft(); // Swipe right
   };
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center py-12 bg-[#f5f5f5] w-full">
-        <div className="w-full max-w-6xl px-8">
-          <h2 className="text-3xl font-bold mb-8 text-black font-poppins text-left">
-            Trending Now
-          </h2>
-        </div>
-        <p className="text-red-500">Error: {error}</p>
-      </div>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <div className="flex flex-col items-center py-12 bg-[#f5f5f5] w-full">
-        <div className="w-full max-w-6xl px-8">
-          <h2 className="text-3xl font-bold mb-8 text-black font-poppins text-left">
-            Trending Now
-          </h2>
-        </div>
-        <p>No products available</p>
-      </div>
-    );
-  }
+  const isExternalImage = (url: string) => {
+    return url.startsWith("http") && !url.includes("localhost");
+  };
 
   return (
-    <div className="flex flex-col items-center py-12 bg-[#ffffff] w-full">
-      <div className="w-full max-w-8xl px-8 relative">
-        {/* Title and navigation buttons in the same row */}
-        <div className="flex justify-between items-center mb-2">
-          <h2
-            className="text-black"
-            style={{
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-          >
+    <div className="flex flex-col items-center py-8 md:py-12 bg-white w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-8xl relative">
+        {/* Title and navigation buttons */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-black text-xl md:text-2xl font-medium">
             Trending Now
           </h2>
 
-          <div className="flex space-x-2">
+          <div className="hidden sm:flex space-x-2">
             <button
               onClick={scrollLeft}
-              className="bg-[#e5e5e5] text-black text-xl p-6 rounded-full hover:bg-gray-700 transition-colors w-10 h-10 flex items-center justify-center"
+              className="bg-[#e5e5e5] text-black rounded-full hover:bg-gray-300 transition-colors w-10 h-10 flex items-center justify-center"
               aria-label="Previous slide"
             >
-              <ArrowBackIosNewIcon />
+              <ArrowBackIosNewIcon className="text-lg" />
             </button>
             <button
               onClick={scrollRight}
-              className="bg-[#e5e5e5] text-black text-xl p-6 rounded-full hover:bg-gray-700 transition-colors w-10 h-10 flex items-center justify-center"
+              className="bg-[#e5e5e5] text-black rounded-full hover:bg-gray-300 transition-colors w-10 h-10 flex items-center justify-center"
               aria-label="Next slide"
             >
-              <ArrowForwardIosIcon />
+              <ArrowForwardIosIcon className="text-lg" />
             </button>
           </div>
         </div>
 
-        {/* Horizontal scroll container */}
+        {/* Carousel container */}
         <div
           ref={sliderRef}
-          className="flex overflow-x-auto scrollbar-hide gap-4 w-full py-4"
+          className="flex overflow-x-auto scrollbar-hide gap-4 md:gap-6 w-full py-4"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -142,49 +105,68 @@ const TrendingNowComponent = () => {
               className="flex-shrink-0"
               style={{
                 scrollSnapAlign: "start",
-                width: "440px",
+                width: "280px",
+                minWidth: "280px",
               }}
             >
-              <Link href={`/components/MainPage`}>
-                <div className="rounded-lg ">
-                  <div className="h-120 flex items-center justify-center">
-                    <img
-                      src={product.product_image}
-                      alt={product.product_name}
-                      className="h-full w-auto object-contain"
-                    />
+              <Link href={`/components/MainPage`} className="block">
+                <div className="rounded-lg">
+                  <div className="h-72 md:h-96 flex items-center justify-center bg-gray-50">
+                    {isExternalImage(product.product_image) ? (
+                      <img
+                        src={product.product_image}
+                        alt={product.product_name}
+                        className="h-full w-auto object-contain"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Image
+                        src={product.product_image}
+                        alt={product.product_name}
+                        width={440}
+                        height={440}
+                        className="h-full w-auto object-contain"
+                      />
+                    )}
                   </div>
-                  <div
-                    className="text-black"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    <h1 className="  mt-2">{product.product_name}</h1>
-                  </div>
-                  <div
-                    className="text-gray-600"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    <h2>{product.product_data.descrption}</h2>
-                  </div>
-                  <div
-                    className="text-black"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    <h2>MRP : ₹{product.product_data.prize}</h2>
+                  <div className="mt-3 space-y-1">
+                    <h1 className="text-sm md:text-base font-medium text-black">
+                      {product.product_name}
+                    </h1>
+                    <h2 className="text-sm md:text-base font-medium text-gray-600">
+                      {product.product_data.descrption}
+                    </h2>
+                    <h2 className="text-sm md:text-base font-medium text-black">
+                      MRP : ₹{product.product_data.prize.toLocaleString()}
+                    </h2>
+                    {product.product_data.is_new && (
+                      <span className="inline-block bg-black text-white text-xs px-2 py-1 rounded mt-1">
+                        New
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>
             </div>
           ))}
+        </div>
+
+        {/* Mobile navigation buttons */}
+        <div className="flex sm:hidden justify-center space-x-4 mt-4">
+          <button
+            onClick={scrollLeft}
+            className="bg-[#e5e5e5] text-black rounded-full hover:bg-gray-300 transition-colors w-10 h-10 flex items-center justify-center"
+            aria-label="Previous slide"
+          >
+            <ArrowBackIosNewIcon className="text-lg" />
+          </button>
+          <button
+            onClick={scrollRight}
+            className="bg-[#e5e5e5] text-black rounded-full hover:bg-gray-300 transition-colors w-10 h-10 flex items-center justify-center"
+            aria-label="Next slide"
+          >
+            <ArrowForwardIosIcon className="text-lg" />
+          </button>
         </div>
       </div>
     </div>
