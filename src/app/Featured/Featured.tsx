@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Featured = () => {
   return (
-    <div className="flex bg-white justify-center items-center w-full py-10 px-4 sm:px-6">
+    <div className="flex text-black bg-white justify-center items-center w-full py-10 px-4 sm:px-6">
       <div className="flex flex-col justify-center w-full items-center max-w-screen-2xl">
         {/* Title Section */}
         <div className="w-full flex justify-start py-2 px-4 sm:px-8 lg:px-[110px]">
