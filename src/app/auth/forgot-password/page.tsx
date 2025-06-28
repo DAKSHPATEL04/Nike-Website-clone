@@ -33,7 +33,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex flex-col bg-white items-center justify-start w-full min-h-screen pt-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col text-black bg-white items-center justify-start w-full min-h-screen pt-12 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-start w-full max-w-md">
         {/* Nike Logo Header */}
         <div className="flex justify-between items-center w-full mb-8">
