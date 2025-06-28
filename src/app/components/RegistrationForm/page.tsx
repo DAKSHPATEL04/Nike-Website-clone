@@ -1,6 +1,6 @@
 "use client";
 
-import Spiner from "@/app/Spiner";
+import Spinner from "../../Spiner";
 import { useProductsHook } from "@/hooks/productsHook";
 import Navbar from "@/shared/Navbar";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,30 +8,62 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+interface Product {
+  _id: string;
+  product_name: string;
+  product_image: string;
+  product_data: {
+    prize: string;
+    descrption: string;
+    rating: string;
+    is_new: boolean;
+  };
+}
+
+interface ProductFormData {
+  product_name: string;
+  product_image: string;
+  product_data: {
+    prize: string;
+    descrption: string;
+    rating: string;
+    is_new: boolean;
+  };
+}
+
 const RegistrationForm = () => {
   const { id } = useParams();
   const editId = Array.isArray(id) ? id[0] : id;
   const router = useRouter();
-
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productDescription, setProductDescription] = useState("");
-  const [productRating, setProductRating] = useState("");
-  const [productImage, setProductImage] = useState("");
-  const [newProduct, setNewProduct] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
 
+  const [formData, setFormData] = useState<ProductFormData>({
+    product_name: "",
+    product_image: "",
+    product_data: {
+      prize: "",
+      descrption: "",
+      rating: "",
+      is_new: true,
+    },
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { data = { products: [] }, isLoading: isFetching } = useProductsHook();
-  const products = data.products;
+  const products: Product[] = data.products;
 
   const resetForm = () => {
-    setProductName("");
-    setProductPrice("");
-    setProductDescription("");
-    setProductRating("");
-    setProductImage("");
-    setNewProduct(true);
+    setFormData({
+      product_name: "",
+      product_image: "",
+      product_data: {
+        prize: "",
+        descrption: "",
+        rating: "",
+        is_new: true,
+      },
+    });
   };
 
   useEffect(() => {
@@ -40,81 +72,121 @@ const RegistrationForm = () => {
       return;
     }
 
-    const product = products.find((product: any) => product._id === editId);
+    const product = products.find((product) => product._id === editId);
     if (product) {
-      setProductName(product.product_name);
-      setProductImage(product.product_image);
-      setProductPrice(product.product_data.prize);
-      setProductDescription(product.product_data.descrption);
-      setProductRating(product.product_data.rating);
-      setNewProduct(product.product_data.is_new ?? true);
+      setFormData({
+        product_name: product.product_name,
+        product_image: product.product_image,
+        product_data: {
+          prize: product.product_data.prize,
+          descrption: product.product_data.descrption,
+          rating: product.product_data.rating,
+          is_new: product.product_data.is_new ?? true,
+        },
+      });
     }
     setIsLoading(false);
   }, [editId, products]);
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    if (name in formData) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (name in formData.product_data) {
+      setFormData((prev) => ({
+        ...prev,
+        product_data: {
+          ...prev.product_data,
+          [name]: name === "is_new" ? !prev.product_data.is_new : value,
+        },
+      }));
+    }
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      product_data: {
+        ...prev.product_data,
+        [name]: checked,
+      },
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate required fields
     if (
-      !productName ||
-      !productPrice ||
-      !productDescription ||
-      !productRating ||
-      !productImage
+      !formData.product_name ||
+      !formData.product_data.prize ||
+      !formData.product_data.descrption ||
+      !formData.product_data.rating ||
+      !formData.product_image
     ) {
       alert("Please fill all required fields");
       return;
     }
 
-    const product = {
-      product_name: productName,
+    const productPayload = {
+      product_name: formData.product_name,
       product_id: editId,
-      product_image: productImage,
+      product_image: formData.product_image,
       product_data: {
-        prize: productPrice,
-        descrption: productDescription,
-        rating: productRating,
-        is_new: newProduct.toString(),
+        prize: formData.product_data.prize,
+        descrption: formData.product_data.descrption,
+        rating: formData.product_data.rating,
+        is_new: formData.product_data.is_new.toString(),
       },
     };
 
     try {
-      setIsLoading(true);
-      const res = await fetch(
-        editId
-          ? "https://react-trainee-api.onrender.com/update/product"
-          : "https://react-trainee-api.onrender.com/create/product",
-        {
-          method: editId ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(product),
-        }
-      );
+      setIsSubmitting(true);
+      const endpoint = editId
+        ? "https://react-trainee-api.onrender.com/update/product"
+        : "https://react-trainee-api.onrender.com/create/product";
+      const method = editId ? "PUT" : "POST";
 
-      if (!res.ok) {
-        throw new Error("Failed to submit product");
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productPayload),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to ${editId ? "update" : "create"} product: ${
+            response.statusText
+          }`
+        );
       }
 
-      alert(
-        editId ? "Product updated successfully" : "Product added successfully"
-      );
-      if (!editId) resetForm();
+      alert(`Product ${editId ? "updated" : "created"} successfully!`);
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      if (!editId) resetForm();
       router.push("/");
     } catch (error) {
-      console.error("Submit error", error);
-      alert("Failed to submit product");
+      console.error("Submission error:", error);
+      alert(
+        `Failed to ${editId ? "update" : "create"} product. Please try again.`
+      );
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   if (isFetching || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Spiner />
+        <Spinner />
       </div>
     );
   }
@@ -140,8 +212,9 @@ const RegistrationForm = () => {
                         Product Name*
                       </label>
                       <input
-                        value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
+                        name="product_name"
+                        value={formData.product_name}
+                        onChange={handleInputChange}
                         type="text"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
                         placeholder="Nike Air Max"
@@ -155,8 +228,9 @@ const RegistrationForm = () => {
                         Price (₹)*
                       </label>
                       <input
-                        value={productPrice}
-                        onChange={(e) => setProductPrice(e.target.value)}
+                        name="prize"
+                        value={formData.product_data.prize}
+                        onChange={handleInputChange}
                         type="number"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
                         placeholder="7999"
@@ -170,8 +244,9 @@ const RegistrationForm = () => {
                         Description*
                       </label>
                       <textarea
-                        value={productDescription}
-                        onChange={(e) => setProductDescription(e.target.value)}
+                        name="descrption"
+                        value={formData.product_data.descrption}
+                        onChange={handleInputChange}
                         rows={3}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
                         placeholder="Product features and details"
@@ -185,8 +260,9 @@ const RegistrationForm = () => {
                         Image URL*
                       </label>
                       <input
-                        value={productImage}
-                        onChange={(e) => setProductImage(e.target.value)}
+                        name="product_image"
+                        value={formData.product_image}
+                        onChange={handleInputChange}
                         type="url"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
                         placeholder="https://example.com/image.jpg"
@@ -200,8 +276,9 @@ const RegistrationForm = () => {
                         Rating (1-5)*
                       </label>
                       <input
-                        value={productRating}
-                        onChange={(e) => setProductRating(e.target.value)}
+                        name="rating"
+                        value={formData.product_data.rating}
+                        onChange={handleInputChange}
                         type="number"
                         min="1"
                         max="5"
@@ -216,14 +293,15 @@ const RegistrationForm = () => {
                     <div className="col-span-2 sm:col-span-1 flex items-end">
                       <div className="flex items-center h-10">
                         <input
-                          id="new-product"
+                          id="is_new"
+                          name="is_new"
                           type="checkbox"
-                          checked={newProduct}
-                          onChange={(e) => setNewProduct(e.target.checked)}
+                          checked={formData.product_data.is_new}
+                          onChange={handleCheckboxChange}
                           className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                         />
                         <label
-                          htmlFor="new-product"
+                          htmlFor="is_new"
                           className="ml-2 block text-sm text-gray-700"
                         >
                           Mark as New Arrival
@@ -236,10 +314,10 @@ const RegistrationForm = () => {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isSubmitting}
                       className="w-full bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 transition-colors font-medium disabled:bg-gray-400"
                     >
-                      {isLoading
+                      {isSubmitting
                         ? "Processing..."
                         : editId
                         ? "Update Product"
@@ -257,13 +335,14 @@ const RegistrationForm = () => {
                   Product Preview
                 </h2>
 
-                {productImage ? (
+                {formData.product_image ? (
                   <div className="space-y-6">
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={productImage}
+                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
+                      <Image
+                        src={formData.product_image}
                         alt="Product preview"
-                        className="w-full h-full object-contain"
+                        fill
+                        className="object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             "/img/placeholder-product.jpg";
@@ -273,7 +352,7 @@ const RegistrationForm = () => {
 
                     <div className="space-y-2">
                       <h3 className="text-lg font-medium text-gray-900">
-                        {productName || "Product Name"}
+                        {formData.product_name || "Product Name"}
                       </h3>
                       <div className="flex items-center">
                         <div className="flex">
@@ -281,7 +360,10 @@ const RegistrationForm = () => {
                             <StarIcon
                               key={i}
                               className={`${
-                                i < Math.floor(Number(productRating) || 0)
+                                i <
+                                Math.floor(
+                                  Number(formData.product_data.rating) || 0
+                                )
                                   ? "text-yellow-400"
                                   : "text-gray-300"
                               } h-4 w-4`}
@@ -289,19 +371,19 @@ const RegistrationForm = () => {
                           ))}
                         </div>
                         <span className="ml-2 text-sm text-gray-500">
-                          {productRating || "0"} stars
+                          {formData.product_data.rating || "0"} stars
                         </span>
                       </div>
                       <p className="text-lg font-bold text-black">
-                        ₹{productPrice || "0"}
+                        ₹{formData.product_data.prize || "0"}
                       </p>
-                      {newProduct && (
+                      {formData.product_data.is_new && (
                         <span className="inline-block bg-black text-white text-xs px-2 py-1 rounded">
                           New Arrival
                         </span>
                       )}
                       <p className="text-sm text-gray-600">
-                        {productDescription ||
+                        {formData.product_data.descrption ||
                           "Product description will appear here"}
                       </p>
                     </div>

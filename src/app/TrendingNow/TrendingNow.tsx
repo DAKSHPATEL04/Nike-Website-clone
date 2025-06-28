@@ -23,7 +23,6 @@ const TrendingNowComponent = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const products = TrendingNow;
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -99,7 +98,7 @@ const TrendingNowComponent = () => {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {products.map((product) => (
+          {TrendingNow.map((product: Product) => (
             <div
               key={product._id}
               className="flex-shrink-0"
@@ -109,15 +108,17 @@ const TrendingNowComponent = () => {
                 minWidth: "280px",
               }}
             >
-              <Link href={`/components/MainPage`} className="block">
+              <Link href="/components/MainPage" className="block">
                 <div className="rounded-lg">
                   <div className="h-72 md:h-96 flex items-center justify-center bg-gray-50">
                     {isExternalImage(product.product_image) ? (
-                      <img
+                      <Image
                         src={product.product_image}
                         alt={product.product_name}
+                        width={440}
+                        height={440}
                         className="h-full w-auto object-contain"
-                        loading="lazy"
+                        unoptimized // For external images that can't be optimized by Next.js
                       />
                     ) : (
                       <Image

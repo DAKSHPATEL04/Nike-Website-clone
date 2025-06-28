@@ -23,7 +23,6 @@ const ShopBySport = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const products = ShopBySports;
 
   const scrollLeft = () => {
     if (sliderRef.current) {
@@ -100,7 +99,7 @@ const ShopBySport = () => {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {products.map((product) => (
+          {ShopBySports.map((product: Product) => (
             <div
               key={product._id}
               className="relative flex-shrink-0"
@@ -110,15 +109,17 @@ const ShopBySport = () => {
                 minWidth: "240px",
               }}
             >
-              <Link href={`/components/MainPage`} className="block">
+              <Link href="/components/MainPage" className="block">
                 <div className="rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-300">
                   <div className="h-52 sm:h-60 md:h-72 lg:h-80 flex items-center justify-center bg-gray-50">
                     {isExternalImage(product.product_image) ? (
-                      <img
+                      <Image
                         src={product.product_image}
                         alt={product.product_name}
+                        width={420}
+                        height={420}
                         className="h-full w-auto object-contain"
-                        loading="lazy"
+                        unoptimized // For external images that can't be optimized by Next.js
                       />
                     ) : (
                       <Image

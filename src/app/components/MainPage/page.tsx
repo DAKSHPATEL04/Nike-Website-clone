@@ -2,7 +2,7 @@
 
 import { Product } from "@/types/MainPage";
 import React, { useState } from "react";
-import Spiner from "../../Spiner";
+import Spinner from "../../Spiner";
 import StarIcon from "@mui/icons-material/Star";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,16 +10,21 @@ import { DeleteProduct } from "@/services/productApi";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useProductsHook } from "@/hooks/productsHook";
-import { useSearch } from "@/context/searchContex";
+import { useSearch } from "../../../context/searchContex";
 import { Box, Modal, Typography } from "@mui/material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
 import Navbar from "@/shared/Navbar";
 import Image from "next/image";
+
+interface ExpandedSections {
+  price: boolean;
+  rating: boolean;
+  newArrival: boolean;
+}
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -34,7 +39,7 @@ const MainPage = () => {
   const [sortBy, setSortBy] = useState("");
 
   // Accordion states for filter sections
-  const [expandedSections, setExpandedSections] = useState({
+  const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
     price: true,
     rating: true,
     newArrival: true,
@@ -49,15 +54,15 @@ const MainPage = () => {
   const { searchQuery } = useSearch();
 
   // Check if image is from external source
-  const isExternalImage = (url: string) => {
+  const isExternalImage = (url: string): boolean => {
     return url.startsWith("http");
   };
 
   // Toggle accordion sections
-  const toggleSection = (section: string) => {
+  const toggleSection = (section: keyof ExpandedSections): void => {
     setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section as keyof typeof prev],
+      [section]: !prev[section],
     }));
   };
 
@@ -107,7 +112,7 @@ const MainPage = () => {
     }
   });
 
-  const style = {
+  const modalStyle = {
     position: "absolute" as const,
     top: "50%",
     left: "50%",
@@ -123,20 +128,22 @@ const MainPage = () => {
     pb: 3,
   };
 
-  const handleDeleteProduct = async (selectedProductId: any) => {
-    if (selectedProductId) {
-      try {
-        await DeleteProduct({ id: selectedProductId });
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-      } catch (error) {
-        console.error("delete product error", error);
-      } finally {
-        setSelectedProductId(null);
-      }
+  const handleDeleteProduct = async (
+    productId: string | null
+  ): Promise<void> => {
+    if (!productId) return;
+
+    try {
+      await DeleteProduct({ id: productId });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    } catch (error) {
+      console.error("Delete product error", error);
+    } finally {
+      setSelectedProductId(null);
     }
   };
 
-  const resetFilters = () => {
+  const resetFilters = (): void => {
     setMinPrice("");
     setMaxPrice("");
     setOnlyNew(false);
@@ -149,7 +156,7 @@ const MainPage = () => {
       <Navbar />
       {isLoading ? (
         <div className="flex justify-center items-center min-h-screen">
-          <Spiner />
+          <Spinner />
         </div>
       ) : (
         <div className="bg-white text-black min-h-screen flex flex-col lg:flex-row">
@@ -399,11 +406,13 @@ const MainPage = () => {
                         <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                           <Link href={`/products/${product._id}`}>
                             {isExternalImage(product.product_image) ? (
-                              <img
+                              <Image
                                 src={product.product_image}
                                 alt={product.product_name}
+                                width={400}
+                                height={400}
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                                loading="lazy"
+                                unoptimized
                               />
                             ) : (
                               <Image
@@ -483,7 +492,7 @@ const MainPage = () => {
         aria-labelledby="delete-modal-title"
         aria-describedby="delete-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography
             id="delete-modal-title"
             variant="h6"

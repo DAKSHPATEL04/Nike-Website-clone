@@ -14,6 +14,10 @@ interface LoginFormData {
   password: string;
 }
 
+interface FirebaseError extends Error {
+  code: string;
+}
+
 const Login = () => {
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
@@ -57,13 +61,14 @@ const Login = () => {
         formData.password
       );
       router.push("/");
-    } catch (error: unknown) {
-      console.error("Authentication failed:", error);
+    } catch (err: unknown) {
+      console.error("Authentication failed:", err);
       let errorMessage =
         "Login failed. Please check your credentials and try again.";
 
-      if (error instanceof Error && "code" in error) {
-        switch (error.code) {
+      if (err instanceof Error && "code" in err) {
+        const firebaseError = err as FirebaseError;
+        switch (firebaseError.code) {
           case "auth/user-not-found":
             errorMessage =
               "No account found with this email address. Please check your email or sign up.";
@@ -150,11 +155,11 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="text-black w-full flex flex-col justify-center items-center py-4 mb-4 text-xl font-medium">
-            <h2 className="text-center text-lg sm:text-xl lg:text-2xl">
+          <div className="text-black w-full flex flex-col justify-center items-center py-4 mb-4">
+            <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-medium">
               Welcome back to Nike
             </h2>
-            <div className="flex justify-center mt-4 text-base font-normal">
+            <div className="flex justify-center mt-4">
               <button
                 type="button"
                 onClick={() => router.push("/auth/Signup")}
@@ -168,8 +173,7 @@ const Login = () => {
           {/* Email */}
           <div className="py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
-              style={{ color: "black" }}
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base text-black"
               type="email"
               name="email"
               placeholder="Email"
@@ -182,8 +186,7 @@ const Login = () => {
           {/* Password */}
           <div className="relative py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
-              style={{ color: "black" }}
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base text-black"
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
@@ -217,7 +220,7 @@ const Login = () => {
               />
               <label
                 htmlFor="rememberMe"
-                className="text-gray-600 cursor-pointer text-sm sm:text-base text-[14px] font-normal"
+                className="text-gray-600 cursor-pointer text-sm sm:text-base"
               >
                 Keep me signed in
               </label>
@@ -225,7 +228,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-gray-600 hover:underline hover:text-black text-sm sm:text-base order-1 sm:order-2 text-[14px] font-normal"
+              className="text-gray-600 hover:underline hover:text-black text-sm sm:text-base order-1 sm:order-2"
             >
               Forgotten your password?
             </button>
@@ -233,7 +236,7 @@ const Login = () => {
 
           {/* Terms */}
           <div className="py-4 w-full">
-            <p className="text-gray-500 text-center text-xs sm:text-sm text-[12px] font-normal">
+            <p className="text-gray-500 text-center text-xs sm:text-sm">
               By logging in, you agree to Nike&apos;s{" "}
               <span className="underline cursor-pointer hover:text-black">
                 Terms of Use
@@ -249,7 +252,7 @@ const Login = () => {
           {/* Sign In Button */}
           <div className="w-full mb-4">
             <button
-              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base lg:text-lg text-[16px] font-medium"
+              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-base font-medium"
               type="submit"
               disabled={loading}
             >
@@ -260,9 +263,7 @@ const Login = () => {
           {/* Divider */}
           <div className="flex items-center w-full py-4">
             <div className="flex-grow border-t border-gray-300"></div>
-            <span className="flex-shrink mx-4 text-gray-400 text-xs sm:text-sm text-[14px]">
-              OR
-            </span>
+            <span className="flex-shrink mx-4 text-gray-400 text-sm">OR</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
@@ -271,7 +272,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="w-full py-3 sm:py-4 lg:py-5 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-sm sm:text-base lg:text-lg text-[16px] font-medium"
+              className="w-full py-3 sm:py-4 lg:py-5 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-base font-medium"
             >
               <svg
                 width="20"
