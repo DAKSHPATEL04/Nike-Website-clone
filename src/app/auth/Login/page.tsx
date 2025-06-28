@@ -98,12 +98,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8">
-      <div className="flex flex-col justify-start items-start max-w-md w-full px-4">
-        <div className="flex justify-between items-start w-full mb-6">
+    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-start items-start max-w-md w-full px-4 sm:px-0 sm:max-w-lg lg:max-w-xl">
+        <div className="flex justify-between items-start w-full mb-6 flex-col sm:flex-row gap-4 sm:gap-0">
           <div>
             <h1
-              className="text-black pt-2 underline"
+              className="text-black pt-2 underline text-center sm:text-left"
               style={{
                 fontSize: "30px",
                 fontWeight: "500",
@@ -112,12 +112,12 @@ const Login = () => {
               Sign In
             </h1>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center justify-center sm:justify-end w-full sm:w-auto">
             <div>
               <Image
                 src="/img/logo.png"
                 alt="Nike Logo"
-                className="w-12 h-auto"
+                className="w-12 h-auto sm:w-14 lg:w-16"
                 width={100}
                 height={100}
               />
@@ -126,7 +126,7 @@ const Login = () => {
               <Image
                 src="/img/air-jordan-logo.png"
                 alt="Air Jordan Logo"
-                className="w-8 h-auto"
+                className="w-8 h-auto sm:w-10 lg:w-12"
                 width={100}
                 height={100}
               />
@@ -135,7 +135,7 @@ const Login = () => {
         </div>
 
         {error && (
-          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full">
+          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -148,7 +148,9 @@ const Login = () => {
               fontWeight: "500",
             }}
           >
-            <h2 className="text-center">Welcome back to Nike</h2>
+            <h2 className="text-center text-lg sm:text-xl lg:text-2xl">
+              Welcome back to Nike
+            </h2>
             <div
               className="flex justify-center mt-4"
               style={{
@@ -159,7 +161,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => router.push("/auth/Signup")}
-                className="text-gray-600 hover:underline"
+                className="text-gray-600 hover:underline text-sm sm:text-base text-center"
               >
                 Don&apos;t have an account? Join Us
               </button>
@@ -169,7 +171,7 @@ const Login = () => {
           {/* Email */}
           <div className="py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type="email"
               placeholder="Email"
@@ -182,7 +184,7 @@ const Login = () => {
           {/* Password */}
           <div className="relative py-2 w-full">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -197,26 +199,26 @@ const Login = () => {
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
-                <VisibilityOffIcon className="text-black" />
+                <VisibilityOffIcon className="text-black text-xl sm:text-2xl" />
               ) : (
-                <RemoveRedEyeIcon className="text-black" />
+                <RemoveRedEyeIcon className="text-black text-xl sm:text-2xl" />
               )}
             </button>
           </div>
 
           {/* Remember Me & Forgot Password */}
-          <div className="flex justify-between items-center py-4 w-full">
-            <div className="flex items-center">
+          <div className="flex justify-between items-center py-4 w-full flex-col sm:flex-row gap-3 sm:gap-0">
+            <div className="flex items-center order-2 sm:order-1">
               <input
                 type="checkbox"
                 id="rememberMe"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="mr-2 w-4 h-4 text-black bg-gray-100 border-gray-300 rounded focus:ring-black focus:ring-2"
+                className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-black bg-gray-100 border-gray-300 rounded focus:ring-black focus:ring-2"
               />
               <label
                 htmlFor="rememberMe"
-                className="text-gray-600 cursor-pointer"
+                className="text-gray-600 cursor-pointer text-sm sm:text-base"
                 style={{
                   fontSize: "14px",
                   fontWeight: "400",
@@ -228,7 +230,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-gray-600 hover:underline hover:text-black"
+              className="text-gray-600 hover:underline hover:text-black text-sm sm:text-base order-1 sm:order-2"
               style={{
                 fontSize: "14px",
                 fontWeight: "400",
@@ -241,7 +243,7 @@ const Login = () => {
           {/* Terms */}
           <div className="py-4 w-full">
             <p
-              className="text-gray-500 text-center"
+              className="text-gray-500 text-center text-xs sm:text-sm"
               style={{
                 fontSize: "12px",
                 fontWeight: "400",
@@ -262,7 +264,7 @@ const Login = () => {
           {/* Sign In Button */}
           <div className="w-full mb-4">
             <button
-              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base lg:text-lg"
               style={{
                 fontSize: "16px",
                 fontWeight: "500",
@@ -278,7 +280,7 @@ const Login = () => {
           <div className="flex items-center w-full py-4">
             <div className="flex-grow border-t border-gray-300"></div>
             <span
-              className="flex-shrink mx-4 text-gray-400"
+              className="flex-shrink mx-4 text-gray-400 text-xs sm:text-sm"
               style={{ fontSize: "14px" }}
             >
               OR
@@ -286,18 +288,23 @@ const Login = () => {
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
-          {/* Google Sign In Button (Optional) */}
+          {/* Google Sign In Button */}
           <div className="w-full text-black">
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="w-full py-3 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3"
+              className="w-full py-3 sm:py-4 lg:py-5 border-2 border-gray-300 rounded-3xl hover:border-gray-400 transition-colors duration-200 flex items-center justify-center gap-3 text-sm sm:text-base lg:text-lg"
               style={{
                 fontSize: "16px",
                 fontWeight: "500",
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="w-5 h-5 sm:w-6 sm:h-6"
+              >
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

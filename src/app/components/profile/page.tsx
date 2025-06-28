@@ -12,6 +12,8 @@ import {
   InsertLinkOutlined,
   SaveOutlined,
   CheckCircleOutlined,
+  Menu as MenuIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   Radio,
@@ -27,6 +29,8 @@ import {
   Typography,
   Box,
   Divider,
+  Drawer,
+  IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -71,7 +75,6 @@ const Profile = () => {
     severity: "success" as "success" | "error" | "info" | "warning",
   });
   const [hasChanges, setHasChanges] = useState(false);
-  // Fix: Properly type initialData to match FormData structure
   const [initialData, setInitialData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -84,6 +87,7 @@ const Profile = () => {
     state: "",
     zipCode: "",
   });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const { user, isOnline } = useAuth();
 
@@ -222,6 +226,10 @@ const Profile = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const menuItems = [
     {
       id: "account",
@@ -248,9 +256,71 @@ const Profile = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
 
-      <div className="flex flex-1">
-        {/* Sidebar Navigation */}
-        <div className="w-64 p-6 bg-white shadow-sm border-r">
+      {/* Mobile menu button */}
+      <div className="lg:hidden flex items-center justify-between p-4 border-b">
+        <Typography variant="h6" className="font-semibold">
+          Settings
+        </Typography>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+        >
+          <MenuIcon />
+        </IconButton>
+      </div>
+
+      <div className="flex flex-1 flex-col lg:flex-row">
+        {/* Sidebar Navigation - Mobile Drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile
+          }}
+          sx={{
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: 280,
+            },
+          }}
+        >
+          <div className="flex items-center justify-between p-4 border-b">
+            <Typography variant="h6" className="font-semibold">
+              Settings
+            </Typography>
+            <IconButton onClick={handleDrawerToggle}>
+              <CloseIcon />
+            </IconButton>
+          </div>
+          <div className="p-4 overflow-y-auto">
+            <nav className="space-y-2">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedMenu(item.id);
+                    setMobileOpen(false);
+                  }}
+                  className={`flex items-center w-full p-3 rounded-lg transition-all duration-200 ${
+                    selectedMenu === item.id
+                      ? "bg-blue-50 text-black border-l-4 border-black"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+                >
+                  <span className="mr-3 text-xl">{item.icon}</span>
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </Drawer>
+
+        {/* Sidebar Navigation - Desktop */}
+        <div className="hidden lg:block w-64 p-6 bg-white shadow-sm border-r">
           <div className="mb-6">
             <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
             <p className="text-sm text-gray-500 mt-1">Manage your account</p>
@@ -272,28 +342,10 @@ const Profile = () => {
               </button>
             ))}
           </nav>
-          {/* Connection Status
-          <div className="mt-8 p-3 rounded-lg bg-gray-50">
-            <div className="flex items-center text-sm">
-              <div
-                className={`w-2 h-2 rounded-full mr-2 ${
-                  isOnline ? "bg-green-500" : "bg-red-500"
-                }`}
-              />
-              <span className={isOnline ? "text-green-700" : "text-red-700"}>
-                {isOnline ? "Online" : "Offline"}
-              </span>
-            </div>
-            {!isOnline && (
-              <p className="text-xs text-gray-600 mt-1">
-                Changes will sync when you're back online
-              </p>
-            )}
-          </div> */}
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 md:p-6 lg:p-8">
           <div className="max-w-4xl mx-auto">
             {loading ? (
               <div className="flex justify-center items-center h-64">
@@ -302,7 +354,7 @@ const Profile = () => {
               </div>
             ) : selectedMenu === "account" ? (
               <Card className="shadow-sm">
-                <CardContent className="p-8">
+                <CardContent className="p-4 sm:p-6 md:p-8">
                   <div className="mb-6">
                     <Typography
                       variant="h4"
@@ -315,7 +367,7 @@ const Profile = () => {
                     </Typography>
                   </div>
 
-                  <Divider className="mb-8" />
+                  <Divider className="mb-6 md:mb-8" />
 
                   <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* Personal Information Section */}
@@ -324,7 +376,7 @@ const Profile = () => {
                         Personal Information
                       </Typography>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <TextField
                           fullWidth
                           label="First Name"
@@ -333,6 +385,7 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                         <TextField
                           fullWidth
@@ -342,10 +395,11 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
                         <TextField
                           fullWidth
                           label="Email"
@@ -356,6 +410,7 @@ const Profile = () => {
                           variant="outlined"
                           required
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                         <TextField
                           fullWidth
@@ -367,10 +422,11 @@ const Profile = () => {
                           variant="outlined"
                           placeholder="+1 (555) 123-4567"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
                         <TextField
                           fullWidth
                           label="Date of Birth"
@@ -381,6 +437,7 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                         <div className="flex flex-col">
                           <Typography
@@ -447,11 +504,12 @@ const Profile = () => {
                         value={formData.address}
                         onChange={handleChange}
                         variant="outlined"
-                        className="mb-6"
+                        className="mb-4 md:mb-6"
                         disabled={saving || !isOnline}
+                        size="small"
                       />
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-4">
                         <TextField
                           fullWidth
                           label="City"
@@ -460,6 +518,7 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                         <TextField
                           fullWidth
@@ -469,6 +528,7 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                         <TextField
                           fullWidth
@@ -478,6 +538,7 @@ const Profile = () => {
                           onChange={handleChange}
                           variant="outlined"
                           disabled={saving || !isOnline}
+                          size="small"
                         />
                       </div>
                     </div>
@@ -485,15 +546,16 @@ const Profile = () => {
                     <Divider />
 
                     {/* Action Buttons */}
-                    <Box className="flex justify-between items-center pt-4">
-                      <div className="flex items-center space-x-4">
+                    <Box className="flex flex-col-reverse sm:flex-row justify-between items-center pt-4 gap-4 sm:gap-0">
+                      <div className="w-full sm:w-auto">
                         {hasChanges && (
                           <Button
                             type="button"
                             variant="outlined"
                             onClick={handleReset}
                             disabled={saving || !isOnline}
-                            className="text-gray-600 border-gray-300 hover:border-gray-400"
+                            className="text-gray-600 border-gray-300 hover:border-gray-400 w-full sm:w-auto"
+                            fullWidth
                           >
                             Reset Changes
                           </Button>
@@ -504,7 +566,7 @@ const Profile = () => {
                         type="submit"
                         variant="contained"
                         disabled={saving || !hasChanges || !isOnline}
-                        className="bg-black hover:bg-gray-800 min-w-[140px]"
+                        className="bg-black hover:bg-gray-800 min-w-[140px] w-full sm:w-auto"
                         startIcon={
                           saving ? (
                             <CircularProgress size={20} color="inherit" />
@@ -514,6 +576,7 @@ const Profile = () => {
                             <CheckCircleOutlined />
                           )
                         }
+                        fullWidth
                       >
                         {saving
                           ? "Saving..."
@@ -527,7 +590,7 @@ const Profile = () => {
               </Card>
             ) : (
               <Card className="shadow-sm">
-                <CardContent className="p-8 text-center">
+                <CardContent className="p-6 md:p-8 text-center">
                   <div className="mb-6">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       {menuItems.find((item) => item.id === selectedMenu)?.icon}
@@ -551,6 +614,7 @@ const Profile = () => {
                     variant="outlined"
                     onClick={() => setSelectedMenu("account")}
                     className="text-black border-black hover:bg-blue-50"
+                    fullWidth
                   >
                     Return to Account Details
                   </Button>

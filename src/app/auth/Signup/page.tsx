@@ -110,12 +110,12 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8">
-      <div className="flex flex-col justify-start items-start max-w-md w-full px-4">
-        <div className="flex justify-between items-start w-full mb-6">
+    <div className="flex flex-col bg-white justify-start items-center w-full min-h-screen pt-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-start items-start max-w-md w-full px-4 sm:px-0 sm:max-w-lg lg:max-w-xl">
+        <div className="flex justify-between items-start w-full mb-6 flex-col sm:flex-row gap-4 sm:gap-0">
           <div>
             <h1
-              className="text-black pt-2 underline"
+              className="text-black pt-2 underline text-center sm:text-left"
               style={{
                 fontFamily: "intern",
                 fontSize: "30px",
@@ -125,12 +125,12 @@ const SignUp = () => {
               Sign Up
             </h1>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center justify-center sm:justify-end w-full sm:w-auto">
             <div>
               <Image
                 src="/img/logo.png"
                 alt="Nike Logo"
-                className="w-12 h-auto"
+                className="w-12 h-auto sm:w-14 lg:w-16"
                 width={100}
                 height={100}
               />
@@ -139,7 +139,7 @@ const SignUp = () => {
               <Image
                 src="/img/air-jordan-logo.png"
                 alt="Air Jordan Logo"
-                className="w-8 h-auto"
+                className="w-8 h-auto sm:w-10 lg:w-12"
                 width={100}
                 height={100}
               />
@@ -148,7 +148,7 @@ const SignUp = () => {
         </div>
 
         {error && (
-          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full">
+          <div className="text-red-500 mb-4 p-3 bg-red-50 border border-red-200 rounded w-full text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -161,7 +161,9 @@ const SignUp = () => {
               fontWeight: "500",
             }}
           >
-            <h2 className="text-center">Join us and start your journey</h2>
+            <h2 className="text-center text-lg sm:text-xl lg:text-2xl">
+              Join us and start your journey
+            </h2>
             <div
               className="flex justify-center mt-4"
               style={{
@@ -172,7 +174,7 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={() => router.push("/auth/Login")}
-                className="text-gray-600 hover:underline"
+                className="text-gray-600 hover:underline text-sm sm:text-base text-center"
                 suppressHydrationWarning={true}
               >
                 Already have an account? Sign In
@@ -180,36 +182,39 @@ const SignUp = () => {
             </div>
           </div>
 
-          {/* First Name */}
-          <div className="py-2 relative">
-            <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ color: "black" }}
-              type="text"
-              placeholder="First Name"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
-              required
-            />
-          </div>
+          {/* First Name and Last Name - Stack on mobile, side by side on larger screens */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            {/* First Name */}
+            <div className="py-2 relative flex-1">
+              <input
+                className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
+                style={{ color: "black" }}
+                type="text"
+                placeholder="First Name"
+                onChange={(e) => setFirstName(e.target.value)}
+                value={firstName}
+                required
+              />
+            </div>
 
-          {/* Last Name */}
-          <div className="py-2 relative">
-            <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              style={{ color: "black" }}
-              type="text"
-              placeholder="Last Name"
-              onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
-              required
-            />
+            {/* Last Name */}
+            <div className="py-2 relative flex-1">
+              <input
+                className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
+                style={{ color: "black" }}
+                type="text"
+                placeholder="Last Name"
+                onChange={(e) => setLastName(e.target.value)}
+                value={lastName}
+                required
+              />
+            </div>
           </div>
 
           {/* Email */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type="email"
               placeholder="Email"
@@ -222,7 +227,7 @@ const SignUp = () => {
           {/* Password */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type={showPassword ? "text" : "password"}
               placeholder="Password (min 6 characters)"
@@ -236,9 +241,9 @@ const SignUp = () => {
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none hover:text-black"
             >
               {showPassword ? (
-                <VisibilityOffIcon className="text-black" />
+                <VisibilityOffIcon className="text-black text-xl sm:text-2xl" />
               ) : (
-                <RemoveRedEyeIcon className="text-black" />
+                <RemoveRedEyeIcon className="text-black text-xl sm:text-2xl" />
               )}
             </button>
           </div>
@@ -246,7 +251,7 @@ const SignUp = () => {
           {/* Confirm Password */}
           <div className="py-2 relative">
             <input
-              className="border rounded border-black w-full h-[50px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              className="border rounded border-black w-full h-[50px] sm:h-[55px] lg:h-[60px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
               style={{ color: "black" }}
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
@@ -260,9 +265,9 @@ const SignUp = () => {
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none hover:text-black"
             >
               {showConfirmPassword ? (
-                <VisibilityOffIcon className="text-black" />
+                <VisibilityOffIcon className="text-black text-xl sm:text-2xl" />
               ) : (
-                <RemoveRedEyeIcon className="text-black" />
+                <RemoveRedEyeIcon className="text-black text-xl sm:text-2xl" />
               )}
             </button>
           </div>
@@ -270,7 +275,7 @@ const SignUp = () => {
           {/* Terms and Conditions */}
           <div className="py-6">
             <p
-              className="text-gray-500 text-center"
+              className="text-gray-500 text-center text-xs sm:text-sm"
               style={{
                 fontSize: "14px",
                 fontWeight: "400",
@@ -290,7 +295,7 @@ const SignUp = () => {
           {/* Submit Button */}
           <div className="w-full">
             <button
-              className="bg-black text-white w-full py-3 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="bg-black text-white w-full py-3 sm:py-4 lg:py-5 rounded-3xl hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base lg:text-lg"
               style={{
                 fontSize: "16px",
                 fontWeight: "500",

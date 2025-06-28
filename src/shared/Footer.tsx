@@ -2,120 +2,125 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 
 const Footer = () => {
   return (
-    <footer
-      className=" w-full flex flex-col justify-center items-center p-4 bg-white text-black"
-      style={{
-        border: "2px solid white",
-      }}
-    >
-      <hr
-        className="flex justify-center items-center w-[1400px] text-[#e5e5e5]"
-        style={{ border: "1px solid #e5e5e5" }}
-      />
-      <div className="flex justify-between items-center w-[1400px]  pt-10">
-        <div className="flex justify-between items-center w-[1000px]  ">
-          <div className="flex flex-col pb-10">
-            <h1
-              className=" py-4 "
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              Resources
-            </h1>
-            <ul
-              className="text-gray-500 gap-4"
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              <li>Find A Store</li>
-              <li>Become A Member</li>
-              <li>Running Shoe Finder</li>
-              <li>Product Advice</li>
-              <li>Send Us Feedback</li>
-            </ul>
+    <footer className="w-full bg-white text-black border-t border-[#e5e5e5]">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top border */}
+        <hr className="border-t border-[#e5e5e5] w-full my-0" />
+
+        {/* Main footer content */}
+        <div className="flex flex-col lg:flex-row justify-between pt-6 md:pt-10 pb-6 md:pb-10">
+          {/* Footer links */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full lg:w-[calc(100%-200px)]">
+            {/* Resources */}
+            <div className="pb-6 md:pb-0">
+              <h3 className="text-sm md:text-base font-medium pb-3 md:pb-4">
+                Resources
+              </h3>
+              <ul className="space-y-2 text-gray-500 text-sm md:text-base font-medium">
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Find A Store
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Become A Member
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Running Shoe Finder
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Product Advice
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Send Us Feedback
+                </li>
+              </ul>
+            </div>
+
+            {/* Help */}
+            <div className="pb-6 md:pb-0">
+              <h3 className="text-sm md:text-base font-medium pb-3 md:pb-4">
+                Help
+              </h3>
+              <ul className="space-y-2 text-gray-500 text-sm md:text-base font-medium">
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Get Help
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Order Status
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Delivery
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Returns
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Contact Us On Nike.com Inquiries
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Contact Us On All Other Inquiries
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="text-sm md:text-base font-medium pb-3 md:pb-4">
+                Company
+              </h3>
+              <ul className="space-y-2 text-gray-500 text-sm md:text-base font-medium">
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  About Nike
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  News
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Careers
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Investors
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Sustainability
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Impact
+                </li>
+                <li className="hover:text-black cursor-pointer transition-colors">
+                  Report a Concern
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="flex flex-col pb-5">
-            <h1
-              className=" py-4"
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              Help
-            </h1>
-            <ul
-              className="text-gray-500 gap-4"
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              <li>Get Help</li>
-              <li>Order Status</li>
-              <li>Delivery</li>
-              <li>Returns</li>
-              <li>Contact Us On Nike.com Inquiries</li>
-              <li>Contact Us On All Other Inquiries</li>
-            </ul>
-          </div>
-          <div>
-            <h1
-              className=" py-4"
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              Company
-            </h1>
-            <ul
-              className="text-gray-500 gap-4"
-              style={{
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              <li>About Nike</li>
-              <li>News</li>
-              <li>Careers</li>
-              <li>Investors</li>
-              <li>Sustainability</li>
-              <li>Impact</li>
-              <li>Report a Concern</li>
-            </ul>
+
+          {/* Language selector */}
+          <div className="flex items-start pt-6 lg:pt-0 lg:items-center lg:justify-end lg:w-[200px]">
+            <div className="flex items-center text-gray-500 text-sm md:text-base font-medium">
+              <LanguageOutlinedIcon className="mr-2" />
+              <span>India</span>
+            </div>
           </div>
         </div>
-        <div
-          className="text-gray-500 gap-4 mb-38"
-          style={{
-            fontSize: "15px",
-            fontWeight: "500",
-          }}
-        >
-          <LanguageOutlinedIcon />
-          India
-        </div>
-      </div>
-      <div className="flex flex-row justify-between items-center w-[1400px] py-10 ">
-        <div>
-          <ul
-            className="flex flex-row justify-center items-center gap-4 text-gray-500"
-            style={{
-              fontSize: "15px",
-              fontWeight: "500",
-            }}
-          >
-            <li className="">© 2025 Nike, Inc. All rights reserved</li>
-            <li className=" hover:text-black">Guides</li>
-            <li className=" hover:text-black">Terms of Sale</li>
-            <li className=" hover:text-black">Terms of Use</li>
-            <li className=" hover:text-black">Nike Privacy Policy</li>
-          </ul>
+
+        {/* Bottom copyright and links */}
+        <div className="flex flex-col sm:flex-row justify-between items-center py-6 md:py-10 border-t border-[#e5e5e5]">
+          <div className="text-gray-500 text-sm md:text-base font-medium mb-4 sm:mb-0">
+            © 2025 Nike, Inc. All rights reserved
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
+            <span className="text-gray-500 hover:text-black cursor-pointer transition-colors text-sm md:text-base font-medium">
+              Guides
+            </span>
+            <span className="text-gray-500 hover:text-black cursor-pointer transition-colors text-sm md:text-base font-medium">
+              Terms of Sale
+            </span>
+            <span className="text-gray-500 hover:text-black cursor-pointer transition-colors text-sm md:text-base font-medium">
+              Terms of Use
+            </span>
+            <span className="text-gray-500 hover:text-black cursor-pointer transition-colors text-sm md:text-base font-medium">
+              Nike Privacy Policy
+            </span>
+          </div>
         </div>
       </div>
     </footer>
