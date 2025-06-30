@@ -17,8 +17,8 @@ const HomePage = () => {
       </div>
 
       {/* Hero Section - Responsive */}
-      <div className="flex bg-white justify-center items-center w-full min-h-[calc(100vh-80px)] md:min-h-screen py-8 md:py-0">
-        <div className="flex flex-col justify-center items-center w-full px-4 md:w-[80%] max-w-screen-2xl">
+      <div className="flex bg-white justify-center items-center w-full min-h-[calc(100vh-70px)] md:min-h-screen py-8 md:py-0">
+        <div className="flex flex-col justify-center items-center w-full px-4 md:w-[55%]  max-w-screen-2xl">
           {/* Responsive Image with optimized Next.js Image */}
           <div className="w-full max-w-[2000px] aspect-video relative">
             <Image
@@ -26,8 +26,8 @@ const HomePage = () => {
               alt="Nike Just Do It - Faith Kipyegon Collection"
               fill
               priority
-              quality={90}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 2000px"
+              quality={100}
+              sizes="(max-width: 768px) 100vw, (max-width: 10px) 80vw, 2000px"
               className="object-cover w-full h-auto"
             />
           </div>

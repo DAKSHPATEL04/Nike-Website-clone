@@ -1,5 +1,3 @@
-import MainPage from "./components/MainPage";
-
 import HomePage from "./components/Home/page";
 import TheLetest from "./theLetest/theLetest";
 import Featured from "./Featured/Featured";
