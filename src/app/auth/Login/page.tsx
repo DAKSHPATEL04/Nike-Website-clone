@@ -8,7 +8,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Login = () => {
   const [password, setPassword] = useState("");
@@ -19,7 +18,6 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
-  const provider = new GoogleAuthProvider();
 
   useEffect(() => {
     if (user) {
@@ -95,14 +93,8 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-      console.log("Successfully signed in with Google!");
-      router.push("/");
-    } catch (error: any) {
-      console.error("Google sign-in failed:", error);
-      setError("Google sign-in failed. Please try again.");
-    }
+    // You can implement Google Sign-In here if needed
+    console.log("Google Sign-In not implemented yet");
   };
 
   return (
