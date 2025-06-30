@@ -1,6 +1,6 @@
 // lib/firebase.ts
 import { initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import {
   getDatabase,
   ref,
@@ -11,7 +11,6 @@ import {
   off,
   goOffline,
   goOnline,
-  connectDatabaseEmulator,
 } from "firebase/database";
 import {
   getFirestore,
@@ -22,8 +21,6 @@ import {
   enableIndexedDbPersistence,
   initializeFirestore,
   CACHE_SIZE_UNLIMITED,
-  connectFirestoreEmulator,
-  deleteDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -39,9 +36,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Initialize Auth
-export const auth = getAuth(app);
-
 // Initialize Realtime Database
 export const database = getDatabase(app);
 
@@ -51,23 +45,15 @@ export const db = initializeFirestore(app, {
 });
 
 // Enable Firestore persistence with error handling
-if (typeof window !== "undefined") {
-  enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === "failed-precondition") {
-      console.warn("Firestore persistence failed - multiple tabs open");
-    } else if (err.code === "unimplemented") {
-      console.warn("Firestore persistence not available in this browser");
-    }
-  });
-}
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err.code === "failed-precondition") {
+    console.warn("Firestore persistence failed - multiple tabs open");
+  } else if (err.code === "unimplemented") {
+    console.warn("Firestore persistence not available in this browser");
+  }
+});
 
-// Connect to emulators in development (optional)
-if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-  // Uncomment these if you're using Firebase emulators in development
-  // connectAuthEmulator(auth, "http://localhost:9099");
-  // connectDatabaseEmulator(database, "localhost", 9000);
-  // connectFirestoreEmulator(db, "localhost", 8080);
-}
+export const auth = getAuth(app);
 
 // Realtime Database Helper Functions
 export const getUserRealtimeRef = (userId: string) =>
@@ -154,33 +140,6 @@ export const enableOnlineMode = () => {
   goOnline(database);
 };
 
-// Helper function to save Google user data after successful sign-in
-export const saveGoogleUserData = async (user: any) => {
-  try {
-    const userData = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
-      providerData: user.providerData,
-      lastSignInTime: user.metadata.lastSignInTime,
-      creationTime: user.metadata.creationTime,
-    };
-
-    // Save to both Realtime Database and Firestore
-    await Promise.all([
-      setUserRealtimeData(user.uid, userData),
-      setUserData(user.uid, userData),
-    ]);
-
-    console.log("Google user data saved successfully");
-  } catch (error) {
-    console.error("Error saving Google user data:", error);
-    // Don't throw error to prevent disrupting the sign-in flow
-  }
-};
-
 // Legacy Firestore functions (keeping for backward compatibility)
 export const getUserDocRef = (userId: string) => doc(db, "users", userId);
 
@@ -202,15 +161,7 @@ export const getUserData = async (userId: string) => {
 export const setUserData = async (userId: string, data: any) => {
   try {
     const docRef = getUserDocRef(userId);
-    await setDoc(
-      docRef,
-      {
-        ...data,
-        updatedAt: new Date().toISOString(),
-        createdAt: data.createdAt || new Date().toISOString(),
-      },
-      { merge: true }
-    );
+    await setDoc(docRef, data, { merge: true });
   } catch (error) {
     console.error("Error setting user data:", error);
     throw error;
@@ -220,22 +171,9 @@ export const setUserData = async (userId: string, data: any) => {
 export const updateUserData = async (userId: string, updates: any) => {
   try {
     const docRef = getUserDocRef(userId);
-    await updateDoc(docRef, {
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    });
+    await updateDoc(docRef, updates);
   } catch (error) {
     console.error("Error updating user data:", error);
-    throw error;
-  }
-};
-
-export const deleteUserData = async (userId: string) => {
-  try {
-    const docRef = getUserDocRef(userId);
-    await deleteDoc(docRef);
-  } catch (error) {
-    console.error("Error deleting user data:", error);
     throw error;
   }
 };
