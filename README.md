@@ -20,7 +20,7 @@ A high-performance, fully responsive clone of the Nike homepage built with Next.
 ✅ Hero Section, Product Cards, CTA & Footer – Replicated with precision to emulate Nike’s brand.
 
 
-# main page 
+# filter page 
 ![Screenshot 2025-07-03 112507](https://github.com/user-attachments/assets/13892f29-ce44-4128-a165-1eead954236b)
 
 
@@ -38,7 +38,7 @@ A high-performance, fully responsive clone of the Nike homepage built with Next.
 
 🧰 Responsive Layouts
 
-# add prodect
+# add product
 ![screencapture-nike-website-clone-two-vercel-app-components-RegistrationForm-6858f1a1748a01aec3116b14-2025-07-03-11_25_27](https://github.com/user-attachments/assets/858ed5f3-1342-439e-8534-c0dcd5a0b01b)
 
 
