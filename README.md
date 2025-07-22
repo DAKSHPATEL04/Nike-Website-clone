@@ -2,7 +2,8 @@
 
 A high-performance, fully responsive clone of the Nike homepage built with Next.js, Tailwind CSS, Framer Motion, and GSAP. This project recreates the premium look and feel of the original Nike website with a modern tech stack optimized for performance, responsiveness, and developer scalability.
 
-![screencapture-nike-website-clone-two-vercel-app-2025-07-03-11_07_22]([[https://github.com/user-attachments/assets/4edb2ef0-0f9f-43dc-8c7a-e98632ed34a0](https://github.com/user-attachments/assets/06edb9d7-1087-4a28-a00e-e6437d26e2d5](https://github.com/user-attachments/assets/06edb9d7-1087-4a28-a00e-e6437d26e2d5)
+![screencapture-nike-website-clone-two-vercel-app-2025-07-03-11_07_22](https://github.com/user-attachments/assets/4edb2ef0-0f9f-43dc-8c7a-e98632ed34a0)
+
 
 
 
