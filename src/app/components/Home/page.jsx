@@ -89,6 +89,7 @@ const HomePage = () => {
                   textTransform: "uppercase",
                   letterSpacing: "-2px",
                   maxWidth: "600px",
+                  marginLeft: "20px",
                 }}
               >
                 INTRODUCING

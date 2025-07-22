@@ -437,7 +437,7 @@ const Navbar = () => {
             id: product.id || product._id,
             name: product.product_name || product.name,
             category: product.category || "Shoes",
-            price: product.product_data?.prize || product.price || 0,
+            price: product.product_data?.price || product.price || 0,
             images: [product.product_image || "/img/placeholder-product.jpg"],
             description: product.product_data?.description || "",
             rating: product.product_data?.rating || 0,
