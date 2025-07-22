@@ -18,7 +18,7 @@ const NewArrival = () => {
             {/* Responsive Image */}
             <div className="relative w-full aspect-[4/3] md:aspect-[16/9]">
               <Image
-                src="/img/new.png"
+                src="/img/new.jpg"
                 alt="Women's Air Jordan Collection - Show 'Em Up"
                 fill
                 className="object-cover"

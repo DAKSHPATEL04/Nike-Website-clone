@@ -4,7 +4,7 @@ import { API_END_POINT } from "../utils/constants";
 export const AllProducts = async () => {
   try {
     const res = await fetch(
-      "https://react-trainee-api.onrender.com/get/products",
+      "https://next-cart-api.vercel.app/get/products",
       {
         method: "GET",
       }
@@ -19,11 +19,12 @@ export const AllProducts = async () => {
 export const DeleteProduct = async ({ id }: { id: string }) => {
   try {
     const res = await fetch(
-      `https://react-trainee-api.onrender.com/delete/product/${id}`,
+      `https://next-cart-api.vercel.app/delete/product/${id}`,
       {
         method: "DELETE",
       }
     );
+    console.log("res", res);
     const data = await res.json();
     console.log(data);
   } catch (error) {

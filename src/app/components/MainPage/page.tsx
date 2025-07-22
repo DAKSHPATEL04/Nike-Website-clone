@@ -17,9 +17,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
 import Navbar from "@/shared/Navbar";
 import Image from "next/image";
+import Footer from "@/shared/Footer";
 
 const MainPage = () => {
   const queryClient = useQueryClient();
@@ -32,18 +32,22 @@ const MainPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
   const [sortBy, setSortBy] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [onlyFeatured, setOnlyFeatured] = useState(false);
 
   // Accordion states for filter sections
   const [expandedSections, setExpandedSections] = useState({
     price: true,
     rating: true,
     newArrival: true,
+    category: true,
+    brand: true,
+    featured: true,
   });
 
   // Modal state
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
-    null
-  );
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   const { data = { products: [] }, isLoading } = useProductsHook();
   const { searchQuery } = useSearch();
@@ -61,47 +65,88 @@ const MainPage = () => {
     }));
   };
 
+  // Get unique categories and brands from products
+  const getUniqueCategories = () => {
+    const categories = data.products
+      .map((product: Product) => product.product_data?.category)
+      .filter(Boolean);
+    return [...new Set(categories)];
+  };
+
+  const getUniqueBrands = () => {
+    const brands = data.products
+      .map((product: Product) => product.product_data?.brand)
+      .filter(Boolean);
+
+    return [...new Set(brands)];
+  };
+
+
   // Filter logic
   const filteredProducts = data.products
     .filter((product: Product) =>
       product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((product: Product) => {
-      const price = parseFloat(product.product_data.prize.toString());
-      const createdAt = new Date(product.product_data.createdAt);
+      // Handle different price field names (prize vs price)
+      const price = parseFloat(
+        product.product_data?.price?.toString() ||
+        product.product_data?.price?.toString() ||
+        product.base_price?.toString() ||
+        "0"
+      );
+
+      const createdAt = new Date(product.product_data?.createdAt);
       const now = new Date();
-      const daysSinceCreated =
-        (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
-      const isNew = daysSinceCreated <= 30;
+      const daysSinceCreated = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+      const isNew = daysSinceCreated <= 30 || product.product_data?.is_new;
 
       const withinMin = minPrice ? price >= parseFloat(minPrice) : true;
       const withinMax = maxPrice ? price <= parseFloat(maxPrice) : true;
       const matchesNew = onlyNew ? isNew : true;
       const matchesRating = minRating
-        ? product.product_data.rating >= parseInt(minRating)
+        ? (product.product_data?.rating || 0) >= parseInt(minRating)
         : true;
+      const matchesCategory = selectedCategory
+        ? product.product_data?.category?.toLowerCase().includes(selectedCategory.toLowerCase())
+        : true;
+      const matchesBrand = selectedBrand
+        ? product.product_data?.brand?.toLowerCase().includes(selectedBrand.toLowerCase())
+        : true;
+      const matchesFeatured = onlyFeatured ? product.is_featured : true;
 
-      return withinMin && withinMax && matchesNew && matchesRating;
+      return withinMin && withinMax && matchesNew && matchesRating &&
+        matchesCategory && matchesBrand && matchesFeatured;
     });
 
   // Sort logic
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const getPriceA = parseFloat(
+      a.product_data?.prize?.toString() ||
+      a.product_data?.price?.toString() ||
+      a.base_price?.toString() ||
+      "0"
+    );
+    const getPriceB = parseFloat(
+      b.product_data?.prize?.toString() ||
+      b.product_data?.price?.toString() ||
+      b.base_price?.toString() ||
+      "0"
+    );
+
     switch (sortBy) {
       case "price-low-high":
-        return (
-          parseFloat(a.product_data.prize) - parseFloat(b.product_data.prize)
-        );
+        return getPriceA - getPriceB;
       case "price-high-low":
-        return (
-          parseFloat(b.product_data.prize) - parseFloat(a.product_data.prize)
-        );
+        return getPriceB - getPriceA;
       case "newest":
-        return (
-          new Date(b.product_data.createdAt).getTime() -
-          new Date(a.product_data.createdAt).getTime()
-        );
+        const dateA = new Date(a.createdAt || a.product_data?.createdAt || 0);
+        const dateB = new Date(b.createdAt || b.product_data?.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
       case "rating":
-        return b.product_data.rating - a.product_data.rating;
+        return (b.product_data?.rating || 0) - (a.product_data?.rating || 0);
+      case "name":
+        return a.product_name.localeCompare(b.product_name);
       default:
         return 0;
     }
@@ -142,6 +187,30 @@ const MainPage = () => {
     setOnlyNew(false);
     setMinRating("");
     setSortBy("");
+    setSelectedCategory("");
+    setSelectedBrand("");
+    setOnlyFeatured(false);
+  };
+
+  // Helper function to get product price
+  const getProductPrice = (product: Product) => {
+    return product.product_data?.price ||
+      product.product_data?.price ||
+      product.base_price ||
+      0;
+  };
+
+  // Helper function to get product rating
+  const getProductRating = (product: Product) => {
+    return product.product_data?.rating || 0;
+  };
+
+  // Helper function to check if product is new
+  const isProductNew = (product: Product) => {
+    const createdAt = new Date(product.product_data?.createdAt);
+    const now = new Date();
+    const daysSinceCreated = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSinceCreated <= 30 || product.product_data?.is_new;
   };
 
   return (
@@ -173,17 +242,15 @@ const MainPage = () => {
                 <option value="price-high-low">Price: High-Low</option>
                 <option value="price-low-high">Price: Low-High</option>
                 <option value="rating">Rating</option>
+                <option value="name">Name</option>
               </select>
             </div>
           </div>
 
           {/* Filter Sidebar */}
           <div
-            className={`fixed lg:sticky top-0 left-0 h-screen lg:h-[calc(100vh-64px)] w-72 bg-white z-40 lg:z-auto shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out transform ${
-              showFilters
-                ? "translate-x-0"
-                : "-translate-x-full lg:translate-x-0"
-            } ${hideSidebar ? "lg:hidden" : ""}`}
+            className={`fixed lg:sticky top-0 left-0 h-screen lg:h-[calc(100vh-64px)] w-72 bg-white z-40 lg:z-auto shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out transform ${showFilters ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+              } ${hideSidebar ? "lg:hidden" : ""}`}
           >
             <div className="p-4 h-full overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
@@ -202,9 +269,7 @@ const MainPage = () => {
                   onClick={() => toggleSection("price")}
                   className="flex justify-between items-center w-full py-2 text-left"
                 >
-                  <span className="font-medium text-sm text-black">
-                    Shop By Price
-                  </span>
+                  <span className="font-medium text-sm text-black">Shop By Price</span>
                   {expandedSections.price ? (
                     <KeyboardArrowUpIcon className="text-gray-600" />
                   ) : (
@@ -241,6 +306,68 @@ const MainPage = () => {
                 )}
               </div>
 
+              {/* Category Filter */}
+              <div className="mb-4 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("category")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-sm text-black">Category</span>
+                  {expandedSections.category ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.category && (
+                  <div className="mt-2">
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      <option value="">All Categories</option>
+                      {getUniqueCategories().map((category, index) => (
+                        <option key={index} value={category as string}>
+                          {category as string}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* Brand Filter */}
+              <div className="mb-4 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("brand")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-sm text-black">Brand</span>
+                  {expandedSections.brand ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.brand && (
+                  <div className="mt-2">
+                    <select
+                      value={selectedBrand}
+                      onChange={(e) => setSelectedBrand(e.target.value)}
+                      className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      <option value="">All Brands</option>
+                      {getUniqueBrands().map((brand, index) => (
+                        <option key={index} value={brand as string}>
+                          {brand as string}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
               {/* Rating Filter */}
               <div className="mb-4 border-b border-gray-200 pb-4">
                 <button
@@ -272,15 +399,41 @@ const MainPage = () => {
                 )}
               </div>
 
+              {/* Featured Filter */}
+              <div className="mb-4 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => toggleSection("featured")}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span className="font-medium text-sm text-black">Featured</span>
+                  {expandedSections.featured ? (
+                    <KeyboardArrowUpIcon className="text-gray-600" />
+                  ) : (
+                    <KeyboardArrowDownIcon className="text-gray-600" />
+                  )}
+                </button>
+                {expandedSections.featured && (
+                  <div className="mt-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={onlyFeatured}
+                        onChange={(e) => setOnlyFeatured(e.target.checked)}
+                        className="w-4 h-4 text-black focus:ring-black border-gray-300 rounded"
+                      />
+                      <span className="text-xs text-gray-700">Featured Only</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
               {/* New Arrival Filter */}
               <div className="mb-4 border-b border-gray-200 pb-4">
                 <button
                   onClick={() => toggleSection("newArrival")}
                   className="flex justify-between items-center w-full py-2 text-left"
                 >
-                  <span className="font-medium text-sm text-black">
-                    New Arrivals
-                  </span>
+                  <span className="font-medium text-sm text-black">New Arrivals</span>
                   {expandedSections.newArrival ? (
                     <KeyboardArrowUpIcon className="text-gray-600" />
                   ) : (
@@ -296,9 +449,7 @@ const MainPage = () => {
                         onChange={(e) => setOnlyNew(e.target.checked)}
                         className="w-4 h-4 text-black focus:ring-black border-gray-300 rounded"
                       />
-                      <span className="text-xs text-gray-700">
-                        New Arrivals Only
-                      </span>
+                      <span className="text-xs text-gray-700">New Arrivals Only</span>
                     </label>
                   </div>
                 )}
@@ -328,11 +479,17 @@ const MainPage = () => {
               {/* Breadcrumb and Title - Desktop */}
               <div className="hidden lg:block mb-6">
                 <nav className="text-sm text-gray-600 mb-2">
-                  <span>Shoes</span> / <span>Nike Dunk</span>
+                  <span>Products</span>
+                  {selectedCategory && (
+                    <>
+                      <span> / </span>
+                      <span>{selectedCategory}</span>
+                    </>
+                  )}
                 </nav>
                 <div className="flex justify-between items-center">
                   <h1 className="text-xl md:text-2xl font-bold text-black">
-                    Men&apos;s Nike Dunk Shoes ({sortedProducts.length})
+                    Products ({sortedProducts.length})
                   </h1>
                   <div className="flex gap-2">
                     <button
@@ -355,21 +512,95 @@ const MainPage = () => {
                         <option value="price-high-low">Price: High-Low</option>
                         <option value="price-low-high">Price: Low-High</option>
                         <option value="rating">Rating</option>
+                        <option value="name">Name</option>
                       </select>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Category Chips */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                <div className="bg-gray-100 px-3 py-1.5 rounded-full">
-                  <span className="text-xs font-medium">Lifestyle</span>
+              {/* Active Filters Display */}
+              {(minPrice || maxPrice || onlyNew || minRating || selectedCategory || selectedBrand || onlyFeatured) && (
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {minPrice && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      Min: ₹{minPrice}
+                      <button
+                        onClick={() => setMinPrice("")}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {maxPrice && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      Max: ₹{maxPrice}
+                      <button
+                        onClick={() => setMaxPrice("")}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {selectedCategory && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      Category: {selectedCategory}
+                      <button
+                        onClick={() => setSelectedCategory("")}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {selectedBrand && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      Brand: {selectedBrand}
+                      <button
+                        onClick={() => setSelectedBrand("")}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {onlyNew && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      New Arrivals
+                      <button
+                        onClick={() => setOnlyNew(false)}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {onlyFeatured && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      Featured
+                      <button
+                        onClick={() => setOnlyFeatured(false)}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {minRating && (
+                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">
+                      {minRating}+ Stars
+                      <button
+                        onClick={() => setMinRating("")}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
                 </div>
-                <div className="bg-gray-100 px-3 py-1.5 rounded-full">
-                  <span className="text-xs font-medium">Skateboarding</span>
-                </div>
-              </div>
+              )}
 
               {/* Products Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -397,7 +628,7 @@ const MainPage = () => {
                       <div className="relative">
                         {/* Product Image */}
                         <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                          <Link href={`/products/${product._id}`}>
+                          <Link href={`/components/MainPage/${product._id}`}>
                             {isExternalImage(product.product_image) ? (
                               <img
                                 src={product.product_image}
@@ -415,6 +646,20 @@ const MainPage = () => {
                               />
                             )}
                           </Link>
+                        </div>
+
+                        {/* Badges */}
+                        <div className="absolute top-2 left-2 flex flex-col gap-1">
+                          {product.is_featured && (
+                            <span className="bg-yellow-400 text-black px-2 py-1 text-xs font-medium rounded">
+                              Featured
+                            </span>
+                          )}
+                          {isProductNew(product) && (
+                            <span className="bg-green-500 text-white px-2 py-1 text-xs font-medium rounded">
+                              New
+                            </span>
+                          )}
                         </div>
 
                         {/* Action Buttons - Top Right */}
@@ -440,28 +685,32 @@ const MainPage = () => {
 
                         {/* Product Info */}
                         <div className="p-2">
-                          <Link href={`/products/${product._id}`}>
+                          <Link href={`/components/MainPage/${product._id}`}>
                             <h3 className="font-medium text-black text-xs sm:text-sm line-clamp-1">
                               {product.product_name}
                             </h3>
                             <p className="text-gray-600 text-xs mt-1">
-                              Men&apos;s Shoes • 1 Colour
+                              {product.product_data?.category || "Category"} • {product.product_data?.brand || "Brand"}
                             </p>
-                            <div className="mt-1 flex items-center">
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <StarIcon
-                                    key={i}
-                                    className={`${
-                                      i < product.product_data.rating
+                            <div className="mt-1 flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <StarIcon
+                                      key={i}
+                                      className={`${i < getProductRating(product)
                                         ? "text-yellow-400"
                                         : "text-gray-300"
-                                    } text-xs`}
-                                  />
-                                ))}
+                                        } text-xs`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-gray-500 text-xs ml-1">
+                                  ({getProductRating(product)})
+                                </span>
                               </div>
-                              <span className="text-black font-semibold text-xs sm:text-sm ml-auto">
-                                ₹{product.product_data.prize}
+                              <span className="text-black font-semibold text-xs sm:text-sm">
+                                ₹{getProductPrice(product)}
                               </span>
                             </div>
                           </Link>
@@ -516,6 +765,7 @@ const MainPage = () => {
           </div>
         </Box>
       </Modal>
+      <Footer />
     </>
   );
 };

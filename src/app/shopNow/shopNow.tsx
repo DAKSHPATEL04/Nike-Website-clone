@@ -30,7 +30,7 @@ const ShopNow = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://react-trainee-api.onrender.com/get/products"
+          "https://next-cart-api.vercel.app/get/products"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch products");
@@ -169,39 +169,30 @@ const ShopNow = () => {
           {products.map((product) => (
             <div
               key={product._id}
-              className="flex-shrink-0"
-              style={{
-                scrollSnapAlign: "start",
-                width: "280px",
-                minWidth: "280px",
-              }}
+              className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[400px] lg:w-[420px]"
             >
-              <Link
-                href={`/components/MainPage?id=${product._id}`}
-                className="block"
-              >
-                <div className="rounded-lg hover:scale-105 transition-transform duration-300 hover:shadow-md">
-                  <div className="h-60 md:h-72 lg:h-80 flex items-center justify-center bg-gray-50 p-4">
-                    {isExternalImage(product.product_image) ? (
-                      <img
-                        src={product.product_image}
-                        alt={product.product_name}
-                        className="h-full w-auto object-contain"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <Image
-                        src={product.product_image}
-                        alt={product.product_name}
-                        width={420}
-                        height={420}
-                        className="h-full w-auto object-contain"
-                      />
-                    )}
-                  </div>
+              <Link href={`/components/MainPage?id=${product._id}`} className="block">
+                <div className="w-full bg-gray-100 rounded-lg overflow-hidden relative aspect-square">
+                  {isExternalImage(product.product_image) ? (
+                    <img
+                      src={product.product_image}
+                      alt={product.product_name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <Image
+                      src={product.product_image}
+                      alt={product.product_name}
+                      layout="fill"
+                      objectFit="cover"
+                      className="hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
                 </div>
               </Link>
             </div>
+
           ))}
         </div>
 

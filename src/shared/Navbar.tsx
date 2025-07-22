@@ -175,9 +175,8 @@ const DropdownMenu = ({
   return (
     <div
       ref={menuRef}
-      className={`absolute top-full ${
-        position === "right" ? "right-0" : "left-0"
-      } mt-2 bg-white shadow-lg border border-gray-200 z-50 py-2 min-w-[200px] rounded-md`}
+      className={`absolute top-full ${position === "right" ? "right-0" : "left-0"
+        } mt-2 bg-white shadow-lg border border-gray-200 z-50 py-2 min-w-[200px] rounded-md`}
       style={{
         opacity: 0,
         visibility: "hidden",
@@ -209,9 +208,8 @@ const MobileDropdownMenu = ({
 }) => {
   return (
     <div
-      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        isActive ? "max-h-[1000px]" : "max-h-0"
-      }`}
+      className={`overflow-hidden transition-all duration-300 ease-in-out ${isActive ? "max-h-[1000px]" : "max-h-0"
+        }`}
     >
       <ul className="space-y-0">
         {items.map((item, index) => (
@@ -252,9 +250,9 @@ const SearchSuggestions = ({
   // Filter products safely
   const filteredProducts = Array.isArray(products)
     ? products.filter((product) => {
-        if (!product || !product.name) return false;
-        return product.name.toLowerCase().includes(searchQuery.toLowerCase());
-      })
+      if (!product || !product.name) return false;
+      return product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    })
     : [];
 
   useEffect(() => {
@@ -427,7 +425,7 @@ const Navbar = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          "https://react-trainee-api.onrender.com/get/products"
+          "https://next-cart-api.vercel.app/get/products"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch products");
@@ -926,9 +924,8 @@ const Navbar = () => {
                 >
                   <span>{menu.title}</span>
                   <AddIcon
-                    className={`transform transition-transform ${
-                      activeMenu === idx ? "rotate-45" : "rotate-0"
-                    }`}
+                    className={`transform transition-transform ${activeMenu === idx ? "rotate-45" : "rotate-0"
+                      }`}
                   />
                 </div>
                 {activeMenu === idx && (
@@ -964,9 +961,8 @@ const Navbar = () => {
             >
               <span>Help</span>
               <AddIcon
-                className={`transform transition-transform ${
-                  activeHelpDropdown ? "rotate-45" : "rotate-0"
-                }`}
+                className={`transform transition-transform ${activeHelpDropdown ? "rotate-45" : "rotate-0"
+                  }`}
               />
             </div>
             <MobileDropdownMenu
@@ -987,9 +983,8 @@ const Navbar = () => {
                 >
                   <span>Hi, {getUserDisplayName()}</span>
                   <AddIcon
-                    className={`transform transition-transform ${
-                      activeProfileDropdown ? "rotate-45" : "rotate-0"
-                    }`}
+                    className={`transform transition-transform ${activeProfileDropdown ? "rotate-45" : "rotate-0"
+                      }`}
                   />
                 </div>
                 <MobileDropdownMenu
