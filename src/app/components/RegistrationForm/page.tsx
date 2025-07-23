@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface Variation {
-  // _id: string;
+  _id?: string;
   color_name: string;
   color_code: string;
   variation_images: string[];
@@ -45,7 +45,7 @@ const RegistrationForm = () => {
   // Variations
   const [variations, setVariations] = useState<Variation[]>([]);
   const [currentVariation, setCurrentVariation] = useState<Variation>({
-    // _id: "",
+    _id: "",
     color_name: "",
     color_code: "#000000",
     variation_images: [""],
@@ -188,7 +188,7 @@ const RegistrationForm = () => {
     ) {
       setVariations(prev => [...prev, currentVariation]);
       setCurrentVariation({
-        // _id: "",
+        _id: "",
         color_name: "",
         color_code: "#000000",
         variation_images: [""],
@@ -223,7 +223,17 @@ const RegistrationForm = () => {
     const productData = {
       product_name: productName,
       product_image: mainImage,
-      product_sub_images: variations.map(v => v.variation_images),
+      variations: variations.map(v => {
+        return {
+          ...(editId && { _id: v._id }),
+          color_name: v.color_name,
+          color_code: v.color_code,
+          variation_images: v.variation_images,
+          main_image: v.main_image,
+          size_availability: v.size_availability,
+          product_id: editId,
+        };
+      }),
       product_data: {
         price: parseFloat(basePrice),
         description,
@@ -233,12 +243,12 @@ const RegistrationForm = () => {
         category,
         model_number: modelNumber,
       },
-      // _id: editId,
+      ...(editId && { _id: editId }),
       base_price: parseFloat(basePrice),
       available_sizes: availableSizes,
       tags,
       is_featured: isFeatured,
-      variations: editId ? undefined : variations, // Only send new variations for creation
+      // variations: editId ? undefined : variations, // Only send new variations for creation
     };
 
     try {
@@ -269,7 +279,7 @@ const RegistrationForm = () => {
       if (!editId && variations.length > 0) {
         await Promise.all(
           variations.map(variation =>
-            fetch("https://next-cart-api.vercel.app/add/variation", {
+            fetch("https://next-cart-api.vercel.app/add/variation/{editId}", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
