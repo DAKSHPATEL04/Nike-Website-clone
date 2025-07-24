@@ -26,3 +26,13 @@ body {
   color: var(--foreground);
   font-family: "Poppins", Arial, Helvetica, sans-serif;
 }
+
+span.PIN_1753335203841_embed_pin .PIN_1753335203841_footer {
+  position: relative;
+  display: none;
+  height: 96px;
+  padding: 16px;
+  color: #333;
+  background: #fff;
+  border: none;
+}
