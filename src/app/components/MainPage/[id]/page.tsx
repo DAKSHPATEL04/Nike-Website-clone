@@ -5,6 +5,9 @@ import { useParams } from 'next/navigation';
 import Navbar from '@/shared/Navbar';
 import Footer from '@/shared/Footer';
 import ShopNow from '@/app/shopNow/shopNow';
+import TrendingNowComponent from '@/app/TrendingNow/TrendingNow';
+
+
 
 
 interface Product {
@@ -679,6 +682,21 @@ const ProductPage = () => {
                     </div>
                 </div>
             </div>
+            <TrendingNowComponent />
+            {/* <div className="flex flex-col md:flex-row justify-center items-center bg-white gap-10 p-4">
+                <iframe
+                    className=''
+                    src="https://assets.pinterest.com/ext/embed.html?id=1688918606343712"
+                    width="345"
+                    height="714"
+                    frameBorder="0"
+                    scrolling="no"
+                    loading="lazy"
+                    allowFullScreen
+
+                ></iframe>
+
+            </div> */}
             <ShopNow />
             <Footer />
         </>
